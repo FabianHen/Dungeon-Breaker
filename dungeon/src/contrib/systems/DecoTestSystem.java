@@ -121,7 +121,7 @@ public class DecoTestSystem extends System {
     }
   }
 
-  public void changeDeco(int change) {
+  void changeDeco(int change) {
     if (testEntity == null) createTestEntity();
     Deco[] decos = Deco.values();
     int currentIndex = currentDeco.ordinal();
@@ -139,13 +139,13 @@ public class DecoTestSystem extends System {
     Game.add(testEntity);
   }
 
-  public void createTestEntity() {
+  void createTestEntity() {
     currentDeco = Deco.values()[0];
     testEntity = DecoFactory.createDeco(getMousePos(), currentDeco);
     Game.add(testEntity);
   }
 
-  public void modifyOffset(boolean x, int change) {
+  void modifyOffset(boolean x, int change) {
     if (testEntity == null) return;
     testEntity
         .fetch(CollideComponent.class)
@@ -162,7 +162,7 @@ public class DecoTestSystem extends System {
             });
   }
 
-  public void modifySize(boolean width, int change) {
+  void modifySize(boolean width, int change) {
     if (testEntity == null) return;
     testEntity
         .fetch(CollideComponent.class)
@@ -216,11 +216,11 @@ public class DecoTestSystem extends System {
     }
   }
 
-  public Entity getTestEntity() {
+  Entity getTestEntity() {
     return testEntity;
   }
 
-  public Deco getCurrentDeco() {
+  Deco getCurrentDeco() {
     return currentDeco;
   }
 }
