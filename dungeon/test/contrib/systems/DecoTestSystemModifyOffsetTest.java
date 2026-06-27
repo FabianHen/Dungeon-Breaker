@@ -3,6 +3,7 @@ package contrib.systems;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import contrib.components.CollideComponent;
+import contrib.entities.deco.Deco;
 import core.utils.Point;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ class DecoTestSystemModifyOffsetTest {
   @BeforeEach
   void setUp() {
     system = new DecoTestSystem();
-    system.createTestEntity(new Point(0, 0));
+    system.createTestEntity(new Point(0, 0), Deco.Cat);
 
     collideComponent = system.getTestEntity().fetch(CollideComponent.class).orElseThrow();
   }

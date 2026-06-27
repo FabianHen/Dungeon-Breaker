@@ -15,7 +15,7 @@ class DecoTestSystemChangeDecoTest {
   @BeforeEach
   void setUp() {
     system = new DecoTestSystem();
-    system.createTestEntity(new Point(0, 0));
+    system.createTestEntity(new Point(0, 0), Deco.Cat);
   }
 
   @Test

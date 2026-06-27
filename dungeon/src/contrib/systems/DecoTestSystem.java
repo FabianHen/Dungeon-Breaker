@@ -145,12 +145,14 @@ public class DecoTestSystem extends System {
   }
 
   void createTestEntity() {
-    createTestEntity(getMousePos());
+    Point position = getMousePos();
+    currentDeco = Deco.values()[0];
+    createTestEntity(position, currentDeco);
   }
 
-  void createTestEntity(Point position) {
-    currentDeco = Deco.values()[0];
-    testEntity = DecoFactory.createDeco(position, currentDeco);
+  void createTestEntity(Point position, Deco deco) {
+    currentDeco = deco;
+    testEntity = DecoFactory.createDeco(position, deco);
     Game.add(testEntity);
   }
 
