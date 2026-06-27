@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import contrib.entities.deco.Deco;
+import core.utils.Point;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +15,7 @@ class DecoTestSystemChangeDecoTest {
   @BeforeEach
   void setUp() {
     system = new DecoTestSystem();
-    system.createTestEntity();
+    system.createTestEntity(new Point(0, 0));
   }
 
   @Test

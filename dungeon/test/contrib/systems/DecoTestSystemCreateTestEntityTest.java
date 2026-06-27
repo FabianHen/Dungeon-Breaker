@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import contrib.components.CollideComponent;
 import core.components.PositionComponent;
+import core.utils.Point;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,21 +20,21 @@ class DecoTestSystemCreateTestEntityTest {
 
   @Test
   void shouldCreateEntity() {
-    system.createTestEntity();
+    system.createTestEntity(new Point(0, 0));
 
     assertNotNull(system.getTestEntity());
   }
 
   @Test
   void createdEntityShouldContainCollider() {
-    system.createTestEntity();
+    system.createTestEntity(new Point(0, 0));
 
     assertTrue(system.getTestEntity().fetch(CollideComponent.class).isPresent());
   }
 
   @Test
   void createdEntityShouldContainPosition() {
-    system.createTestEntity();
+    system.createTestEntity(new Point(0, 0));
 
     assertTrue(system.getTestEntity().fetch(PositionComponent.class).isPresent());
   }
