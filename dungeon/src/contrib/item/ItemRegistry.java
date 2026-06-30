@@ -206,4 +206,10 @@ public final class ItemRegistry {
     }
     return id;
   }
+
+  /** this method is just for test purposes */
+  public static void clearMapsForTests() {
+    ITEMS.clear();
+    FACTORIES.clear();
+  }
 }
