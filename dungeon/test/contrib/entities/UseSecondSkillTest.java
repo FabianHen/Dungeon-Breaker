@@ -1,21 +1,19 @@
 package contrib.entities;
 
-import core.Entity;
-import core.utils.Point;
-import contrib.components.SkillComponent;
-import contrib.utils.components.skill.Skill;
-import contrib.utils.components.skill.cursorSkill.CursorSkill;
-import contrib.utils.components.skill.projectileSkill.ProjectileSkill;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import contrib.components.SkillComponent;
+import contrib.utils.components.skill.Skill;
+import contrib.utils.components.skill.cursorSkill.CursorSkill;
+import contrib.utils.components.skill.projectileSkill.ProjectileSkill;
+import core.Entity;
+import core.utils.Point;
 import java.util.Optional;
 import java.util.function.Supplier;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -24,23 +22,17 @@ import org.mockito.MockitoAnnotations;
 
 public class UseSecondSkillTest {
 
-  @Mock
-  private Entity mockHero;
+  @Mock private Entity mockHero;
 
-  @Mock
-  private SkillComponent mockSkillComponent;
+  @Mock private SkillComponent mockSkillComponent;
 
-  @Mock
-  private CursorSkill mockCursorSkill;
+  @Mock private CursorSkill mockCursorSkill;
 
-  @Mock
-  private ProjectileSkill mockProjectileSkill;
+  @Mock private ProjectileSkill mockProjectileSkill;
 
-  @Mock
-  private Skill mockGenericSkill;
+  @Mock private Skill mockGenericSkill;
 
-  @Captor
-  private ArgumentCaptor<Supplier<Point>> supplierCaptor;
+  @Captor private ArgumentCaptor<Supplier<Point>> supplierCaptor;
 
   private Point validTarget;
   private AutoCloseable mocks;
@@ -64,8 +56,10 @@ public class UseSecondSkillTest {
     HeroController.useSecondSkill(mockHero, validTarget);
 
     verify(mockCursorSkill).cursorPositionSupplier(supplierCaptor.capture());
-    assertEquals(validTarget, supplierCaptor.getValue().get(),
-      "Cursor skill should set the target position to the provided valid target point");
+    assertEquals(
+        validTarget,
+        supplierCaptor.getValue().get(),
+        "Cursor skill should set the target position to the provided valid target point");
     verify(mockCursorSkill, times(1)).execute(mockHero);
   }
 
@@ -77,8 +71,10 @@ public class UseSecondSkillTest {
     HeroController.useSecondSkill(mockHero, validTarget);
 
     verify(mockProjectileSkill).endPointSupplier(supplierCaptor.capture());
-    assertEquals(validTarget, supplierCaptor.getValue().get(),
-      "Projectile skill should set the endpoint to the provided valid target point");
+    assertEquals(
+        validTarget,
+        supplierCaptor.getValue().get(),
+        "Projectile skill should set the endpoint to the provided valid target point");
     verify(mockProjectileSkill, times(1)).execute(mockHero);
   }
 
@@ -120,9 +116,10 @@ public class UseSecondSkillTest {
   void useSecondSkill_WithNullHero_ThrowsNullPointerException() {
     Entity nullHero = null;
 
-    assertThrows(NullPointerException.class, () ->
-        HeroController.useSecondSkill(nullHero, validTarget),
-      "NullPointerException should be thrown when hero parameter is null");
+    assertThrows(
+        NullPointerException.class,
+        () -> HeroController.useSecondSkill(nullHero, validTarget),
+        "NullPointerException should be thrown when hero parameter is null");
   }
 
   @Test
@@ -133,8 +130,9 @@ public class UseSecondSkillTest {
     HeroController.useSecondSkill(mockHero, null);
 
     verify(mockCursorSkill).cursorPositionSupplier(supplierCaptor.capture());
-    assertNull(supplierCaptor.getValue().get(),
-      "Cursor skill supplier should return null when null target is provided");
+    assertNull(
+        supplierCaptor.getValue().get(),
+        "Cursor skill supplier should return null when null target is provided");
     verify(mockCursorSkill, times(1)).execute(mockHero);
   }
 
@@ -146,8 +144,9 @@ public class UseSecondSkillTest {
     HeroController.useSecondSkill(mockHero, null);
 
     verify(mockProjectileSkill).endPointSupplier(supplierCaptor.capture());
-    assertNull(supplierCaptor.getValue().get(),
-      "Projectile skill supplier should return null when null target is provided");
+    assertNull(
+        supplierCaptor.getValue().get(),
+        "Projectile skill supplier should return null when null target is provided");
     verify(mockProjectileSkill, times(1)).execute(mockHero);
   }
 }
