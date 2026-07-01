@@ -71,13 +71,17 @@ public class StacksizeTest {
 
   // U1: invalid stack size (< 0 or > 64)
 
-  /** Tests that a stack size below the lower bound (-1) throws an {@link IllegalArgumentException}. */
+  /**
+   * Tests that a stack size below the lower bound (-1) throws an {@link IllegalArgumentException}.
+   */
   @Test
   public void testStackSize_belowLowerBound() {
     assertThrows(IllegalArgumentException.class, () -> item.stackSize(-1));
   }
 
-  /** Tests that a stack size above the upper bound (65) throws an {@link IllegalArgumentException}. */
+  /**
+   * Tests that a stack size above the upper bound (65) throws an {@link IllegalArgumentException}.
+   */
   @Test
   public void testStackSize_aboveUpperBound() {
     assertThrows(IllegalArgumentException.class, () -> item.stackSize(65));
@@ -85,13 +89,19 @@ public class StacksizeTest {
 
   // U2: invalid maximum stack size (< 1 or > 64)
 
-  /** Tests that a maximum stack size below the lower bound (0) throws an {@link IllegalArgumentException}. */
+  /**
+   * Tests that a maximum stack size below the lower bound (0) throws an {@link
+   * IllegalArgumentException}.
+   */
   @Test
   public void testMaxStackSize_belowLowerBound() {
     assertThrows(IllegalArgumentException.class, () -> item.maxStackSize(0));
   }
 
-  /** Tests that a maximum stack size above the upper bound (65) throws an {@link IllegalArgumentException}. */
+  /**
+   * Tests that a maximum stack size above the upper bound (65) throws an {@link
+   * IllegalArgumentException}.
+   */
   @Test
   public void testMaxStackSize_aboveUpperBound() {
     assertThrows(IllegalArgumentException.class, () -> item.maxStackSize(65));
