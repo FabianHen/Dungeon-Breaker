@@ -5,6 +5,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import contrib.DefaultGameProvider;
+import contrib.GameProvider;
 import contrib.components.HealthComponent;
 import contrib.utils.systems.levelEditor.DecoMode;
 import contrib.utils.systems.levelEditor.LevelBoundsMode;
@@ -15,7 +17,6 @@ import contrib.utils.systems.levelEditor.ShiftLevelMode;
 import contrib.utils.systems.levelEditor.StartTilesMode;
 import contrib.utils.systems.levelEditor.TilesMode;
 import core.Entity;
-import core.Game;
 import core.System;
 import core.components.InputComponent;
 import core.components.PlayerComponent;
@@ -71,19 +72,32 @@ public class LevelEditorSystem extends System {
 
   private static Map<Integer, InputComponent.InputData> playerClallbacks = null;
 
+  private final GameProvider game;
+
   /**
    * Creates a new LevelEditorSystem.
    *
    * @param pathToLevels The folder in which the file is placed this system.
+   * @param game The game provider to be used.
    */
-  public LevelEditorSystem(String pathToLevels) {
+  public LevelEditorSystem(String pathToLevels, GameProvider game) {
     super();
     LevelEditorSystem.pathToLevels = pathToLevels;
+    this.game = game;
+  }
+
+  /**
+   * Constructs a new LevelEditorSystem with the given GameProvider.
+   *
+   * @param pathToLevels The folder in which the file is placed this system.
+   */
+  public LevelEditorSystem(String pathToLevels) {
+    this(pathToLevels, new DefaultGameProvider());
   }
 
   /** Creates a new LevelEditorSystem. */
   public LevelEditorSystem() {
-    super();
+    this("", new DefaultGameProvider());
   }
 
   /**
@@ -99,10 +113,11 @@ public class LevelEditorSystem extends System {
    * Sets the active status of the LevelEditorSystem.
    *
    * @param active The active status to set.
+   * @param game The game provider to be used.
    */
-  public static void active(boolean active) {
+  public static void active(boolean active, GameProvider game) {
     LevelEditorSystem.active = active;
-    Entity player = Game.player().orElseThrow();
+    Entity player = game.player().orElseThrow();
     if (active) {
       player
           .fetch(InputComponent.class)
@@ -171,7 +186,7 @@ public class LevelEditorSystem extends System {
         .append("] )");
     modeSelection.append("\n\n");
     status = modeSelection + status;
-    DebugDrawSystem.drawText(FONT, status, new Point(10.0f, Game.windowHeight() - 10.0f));
+    DebugDrawSystem.drawText(FONT, status, new Point(10.0f, game.windowHeight() - 10.0f));
 
     // Draw feedback message if timer > 0
     if (feedbackMessageTimer > 0.0f && !feedbackMessage.isEmpty()) {
@@ -186,7 +201,7 @@ public class LevelEditorSystem extends System {
     }
 
     // Draw level boundaries in green with alpha 0.3f
-    Tile[][] layout = Game.currentLevel().orElseThrow().layout();
+    Tile[][] layout = game.currentLevel().orElseThrow().layout();
     DebugDrawSystem.drawRectangleOutline(
         0, 0, layout[0].length, layout.length, new Color(0, 1, 0, 0.3f));
 
@@ -196,12 +211,12 @@ public class LevelEditorSystem extends System {
   @Override
   public void execute() {
     if (InputManager.isKeyJustPressed(TOGGLE_ACTIVE)) {
-      active(!active);
+      active(!active, this.game);
     }
 
     if (!active) return;
 
-    Optional<PlayerComponent> pc = Game.player().flatMap(e -> e.fetch(PlayerComponent.class));
+    Optional<PlayerComponent> pc = game.player().flatMap(e -> e.fetch(PlayerComponent.class));
     if (pc.isPresent() && pc.get().openDialogs()) {
       return;
     }
@@ -238,7 +253,7 @@ public class LevelEditorSystem extends System {
   }
 
   private void toggleDebugShader() {
-    DrawSystem ds = (DrawSystem) Game.systems().get(DrawSystem.class);
+    DrawSystem ds = (DrawSystem) game.systems().get(DrawSystem.class);
     if (debugShaderActive) {
       ds.levelShaders().remove(DEBUG_SHADER_KEY);
       ds.entityDepthShaders(DepthLayer.Player.depth()).remove(DEBUG_SHADER_KEY);

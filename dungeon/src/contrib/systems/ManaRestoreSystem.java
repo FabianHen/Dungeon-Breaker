@@ -1,7 +1,8 @@
 package contrib.systems;
 
+import contrib.DefaultGameProvider;
+import contrib.GameProvider;
 import contrib.components.ManaComponent;
-import core.Game;
 import core.System;
 
 /**
@@ -13,13 +14,21 @@ import core.System;
  */
 public class ManaRestoreSystem extends System {
 
-  /**
-   * Creates a new {@code ManaRestoreSystem}.
-   *
-   * <p>This system operates on entities that have a {@link ManaComponent}.
-   */
+  private final GameProvider game;
+
+  /** Creates a new {@code ManaRestoreSystem} with a DefaultGameProvider. */
   public ManaRestoreSystem() {
+    this(new DefaultGameProvider());
+  }
+
+  /**
+   * Creates a new {@code ManaRestoreSystem} with the given GameProvider.
+   *
+   * @param game The game provider to be used.
+   */
+  public ManaRestoreSystem(GameProvider game) {
     super(ManaComponent.class);
+    this.game = game;
   }
 
   /**
@@ -37,6 +46,6 @@ public class ManaRestoreSystem extends System {
   public void execute() {
     filteredEntityStream()
         .flatMap(e -> e.fetch(ManaComponent.class).stream())
-        .forEach(m -> m.restore(m.restorePerSecond() / Game.frameRate()));
+        .forEach(m -> m.restore(m.restorePerSecond() / game.frameRate()));
   }
 }

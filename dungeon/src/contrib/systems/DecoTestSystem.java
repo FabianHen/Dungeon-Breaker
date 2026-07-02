@@ -3,12 +3,13 @@ package contrib.systems;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import contrib.DefaultGameProvider;
+import contrib.GameProvider;
 import contrib.components.CollideComponent;
 import contrib.entities.deco.Deco;
 import contrib.entities.deco.DecoFactory;
 import contrib.utils.components.skill.SkillTools;
 import core.Entity;
-import core.Game;
 import core.System;
 import core.components.PositionComponent;
 import core.systems.input.InputManager;
@@ -37,9 +38,21 @@ public class DecoTestSystem extends System {
   private Mode currentMode = Mode.ChangeDeco;
   private final BitmapFont font;
 
-  /** Constructor for DecoTestSystem. */
+  private final GameProvider game;
+
+  /** Creates a new DecoTestSystem with a DefaultGameProvider. */
   public DecoTestSystem() {
+    this(new DefaultGameProvider());
+  }
+
+  /**
+   * Creates a new DecoTestSystem with the given GameProvider.
+   *
+   * @param game The game provider to be used.
+   */
+  public DecoTestSystem(GameProvider game) {
     font = FontHelper.getFont("fonts/Roboto-Bold.ttf", 16);
+    this.game = game;
   }
 
   /** Executes the system. */
@@ -134,15 +147,15 @@ public class DecoTestSystem extends System {
             .map(PositionComponent::position)
             .orElse(new Point(0, 0));
 
-    Game.remove(testEntity);
+    game.remove(testEntity);
     testEntity = DecoFactory.createDeco(oldPos, currentDeco);
-    Game.add(testEntity);
+    game.add(testEntity);
   }
 
   private void createTestEntity() {
     currentDeco = Deco.values()[0];
     testEntity = DecoFactory.createDeco(getMousePos(), currentDeco);
-    Game.add(testEntity);
+    game.add(testEntity);
   }
 
   private void modifyOffset(boolean x, int change) {
