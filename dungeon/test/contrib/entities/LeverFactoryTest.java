@@ -21,7 +21,9 @@ import core.utils.components.path.SimpleIPath;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-/** Tests for {@link LeverFactory#createLever(Point, ICommand, core.utils.components.path.IPath)}. */
+/**
+ * Tests for {@link LeverFactory#createLever(Point, ICommand, core.utils.components.path.IPath)}.
+ */
 public class LeverFactoryTest {
 
   /** Resets global game state after each test. */
@@ -55,8 +57,7 @@ public class LeverFactoryTest {
   @Test
   public void interaction_togglesOffToOn_sendsOnSignal() {
     Point pos = new Point(0, 0);
-    Entity lever =
-        LeverFactory.createLever(pos, ICommand.NOOP, new SimpleIPath("objects/lever"));
+    Entity lever = LeverFactory.createLever(pos, ICommand.NOOP, new SimpleIPath("objects/lever"));
     Entity who = new Entity();
     who.add(new PositionComponent(pos));
 
@@ -74,8 +75,7 @@ public class LeverFactoryTest {
   @Test
   public void interaction_togglesOnToOff_sendsOffSignal() {
     Point pos = new Point(0, 0);
-    Entity lever =
-        LeverFactory.createLever(pos, ICommand.NOOP, new SimpleIPath("objects/lever"));
+    Entity lever = LeverFactory.createLever(pos, ICommand.NOOP, new SimpleIPath("objects/lever"));
     lever.fetch(LeverComponent.class).get().toggle(); // manually switch to on, bypassing signals
     Entity who = new Entity();
     who.add(new PositionComponent(pos));
@@ -113,8 +113,7 @@ public class LeverFactoryTest {
    */
   @Test
   public void createLever_nullPosition_characterize() {
-    Entity lever =
-        LeverFactory.createLever(null, ICommand.NOOP, new SimpleIPath("objects/lever"));
+    Entity lever = LeverFactory.createLever(null, ICommand.NOOP, new SimpleIPath("objects/lever"));
 
     assertTrue(lever.isPresent(PositionComponent.class));
     PositionComponent pc = lever.fetch(PositionComponent.class).get();
@@ -136,8 +135,8 @@ public class LeverFactoryTest {
   /**
    * Characterizes {@code createLever} with a {@code null} texture path. {@link
    * core.utils.components.draw.animation.Animation#loadAnimationSpritesheet} dereferences the path
-   * argument directly (calls {@code path.pathString()}), so a {@code null} path results in a
-   * {@link NullPointerException}.
+   * argument directly (calls {@code path.pathString()}), so a {@code null} path results in a {@link
+   * NullPointerException}.
    */
   @Test
   public void createLever_nullTexturePath_throws() {
@@ -147,14 +146,13 @@ public class LeverFactoryTest {
   }
 
   /**
-   * Verifies that triggering the interaction on a lever missing its {@link LeverComponent} throws
-   * a {@link MissingComponentException} (the interaction's {@code orElseThrow} fires).
+   * Verifies that triggering the interaction on a lever missing its {@link LeverComponent} throws a
+   * {@link MissingComponentException} (the interaction's {@code orElseThrow} fires).
    */
   @Test
   public void interaction_missingLeverComponent_throwsMissingComponentException() {
     Point pos = new Point(0, 0);
-    Entity lever =
-        LeverFactory.createLever(pos, ICommand.NOOP, new SimpleIPath("objects/lever"));
+    Entity lever = LeverFactory.createLever(pos, ICommand.NOOP, new SimpleIPath("objects/lever"));
     lever.remove(LeverComponent.class);
     Entity who = new Entity();
     who.add(new PositionComponent(pos));
@@ -171,8 +169,7 @@ public class LeverFactoryTest {
   @Test
   public void interaction_missingDrawComponent_togglesNoSignalNoException() {
     Point pos = new Point(0, 0);
-    Entity lever =
-        LeverFactory.createLever(pos, ICommand.NOOP, new SimpleIPath("objects/lever"));
+    Entity lever = LeverFactory.createLever(pos, ICommand.NOOP, new SimpleIPath("objects/lever"));
     lever.remove(DrawComponent.class);
     Entity who = new Entity();
     who.add(new PositionComponent(pos));
