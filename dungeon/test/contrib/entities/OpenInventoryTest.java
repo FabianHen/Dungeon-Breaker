@@ -40,11 +40,15 @@ public class OpenInventoryTest {
 
       DialogContext[] capturedContext = new DialogContext[1];
       dialogFactoryMock
-          .when(() -> DialogFactory.show(any(DialogContext.class), anyBoolean(), anyBoolean(), anyInt()))
-          .thenAnswer(invocation -> {
-            capturedContext[0] = invocation.getArgument(0);
-            return null;
-          });
+          .when(
+              () ->
+                  DialogFactory.show(
+                      any(DialogContext.class), anyBoolean(), anyBoolean(), anyInt()))
+          .thenAnswer(
+              invocation -> {
+                capturedContext[0] = invocation.getArgument(0);
+                return null;
+              });
 
       HeroController.openInventory(hero);
 
