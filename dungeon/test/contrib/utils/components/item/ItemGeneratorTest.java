@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 /** Tests for {@link ItemGenerator}. */
 public class ItemGeneratorTest {
 
+  /** Verifies that a registered item type can be generated. */
   @Test
   public void generateItemDataReturnsRegisteredItem() {
     ItemGenerator generator = new ItemGenerator();
@@ -25,6 +26,7 @@ public class ItemGeneratorTest {
     assertInstanceOf(ItemKey.class, generator.generateItemData());
   }
 
+  /** Verifies that higher weighted items are generated more often. */
   @Test
   public void generateItemDataPrefersHigherWeight() {
     ItemGenerator generator = new ItemGenerator();
@@ -49,6 +51,7 @@ public class ItemGeneratorTest {
     assertTrue(generatedKeys > generatedHammers);
   }
 
+  /** Verifies that generation fails when no items are registered. */
   @Test
   public void generateItemDataThrowsOnEmptyGenerator() {
     ItemGenerator generator = new ItemGenerator();
@@ -56,6 +59,7 @@ public class ItemGeneratorTest {
     assertThrows(IllegalStateException.class, generator::generateItemData);
   }
 
+  /** Verifies that reset removes all previously registered items. */
   @Test
   public void resetRemovesRegisteredItems() {
     ItemGenerator generator = new ItemGenerator();
@@ -68,6 +72,7 @@ public class ItemGeneratorTest {
     assertThrows(IllegalStateException.class, generator::generateItemData);
   }
 
+  /** Verifies that the default generator can produce at least one item. */
   @Test
   public void defaultItemGeneratorContainsItems() {
     ItemGenerator generator = ItemGenerator.defaultItemGenerator();
@@ -75,6 +80,7 @@ public class ItemGeneratorTest {
     assertNotNull(generator.generateItemData());
   }
 
+  /** Verifies that the default generator can produce multiple valid item types. */
   @Test
   public void defaultItemGeneratorGeneratesDifferentValidItemTypes() {
     ItemGenerator generator = ItemGenerator.defaultItemGenerator();
