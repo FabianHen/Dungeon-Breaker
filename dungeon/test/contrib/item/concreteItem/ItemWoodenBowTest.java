@@ -128,10 +128,7 @@ public class ItemWoodenBowTest {
     assertTrue(bow.collect(itemEntity, collector));
 
     assertTrue(
-        collector
-            .fetch(InventoryComponent.class)
-            .map(inv -> inv.hasItem(bow))
-            .orElse(false));
+        collector.fetch(InventoryComponent.class).map(inv -> inv.hasItem(bow)).orElse(false));
     assertTrue(
         collector
             .fetch(SkillComponent.class)
@@ -154,10 +151,7 @@ public class ItemWoodenBowTest {
     assertTrue(bow.collect(itemEntity, collector));
 
     assertTrue(
-        collector
-            .fetch(InventoryComponent.class)
-            .map(inv -> inv.hasItem(bow))
-            .orElse(false));
+        collector.fetch(InventoryComponent.class).map(inv -> inv.hasItem(bow)).orElse(false));
     assertEquals(0, Game.levelEntities().count());
     assertFalse(collector.isPresent(SkillComponent.class));
   }
@@ -176,10 +170,7 @@ public class ItemWoodenBowTest {
     assertFalse(bow.collect(itemEntity, collector));
 
     assertFalse(
-        collector
-            .fetch(InventoryComponent.class)
-            .map(inv -> inv.hasItem(bow))
-            .orElse(false));
+        collector.fetch(InventoryComponent.class).map(inv -> inv.hasItem(bow)).orElse(false));
     assertEquals(1, Game.levelEntities().count());
   }
 
@@ -324,10 +315,7 @@ public class ItemWoodenBowTest {
     assertEquals(before, Game.levelEntities().count());
     assertTrue(Arrays.asList(inventoryComponent.items()).contains(bow));
     assertTrue(
-        player
-            .fetch(SkillComponent.class)
-            .flatMap(sc -> sc.getSkill(BowSkill.class))
-            .isPresent());
+        player.fetch(SkillComponent.class).flatMap(sc -> sc.getSkill(BowSkill.class)).isPresent());
   }
 
   /** WTF? . */
