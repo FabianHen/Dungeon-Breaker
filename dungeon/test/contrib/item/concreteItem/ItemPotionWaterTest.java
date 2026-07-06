@@ -14,9 +14,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests for {@link ItemPotionWater}: constructing the potion and using it.
- */
+/** Tests for {@link ItemPotionWater}: constructing the potion and using it. */
 public class ItemPotionWaterTest {
 
   /** The fixed amount the water potion heals for, mirroring the constant in the item. */
@@ -59,7 +57,8 @@ public class ItemPotionWaterTest {
   }
 
   @Test
-  @DisplayName("use() still removes the potion without error when the entity has no health component")
+  @DisplayName(
+      "use() still removes the potion without error when the entity has no health component")
   public void useWithInventoryNoHealthRemovesWithoutError() {
     ItemPotionWater potion = new ItemPotionWater();
     InventoryComponent inventory = new InventoryComponent(1);
@@ -69,7 +68,9 @@ public class ItemPotionWaterTest {
 
     assertDoesNotThrow(() -> potion.use(user));
 
-    assertFalse(inventory.hasItem(potion), "the last exemplar should still be removed even without healing");
+    assertFalse(
+        inventory.hasItem(potion),
+        "the last exemplar should still be removed even without healing");
   }
 
   @Test
