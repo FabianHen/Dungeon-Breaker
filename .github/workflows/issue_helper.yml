@@ -1,0 +1,170 @@
+name: Sub-Issues an PR anhängen
+
+# Wenn im PR-Text ein (Parent-)Issue per Closing-Keyword referenziert wird
+# (Closes/Fixes/Resolves #N), hängt dieser Workflow rekursiv ALLE darunter-
+# liegenden Sub-Issues (inkl. Enkel-, Urenkel- ... Issues) ebenfalls an den PR an.
+# "Anhängen" = eine "Closes"-Referenz in den PR-Body schreiben -> verknüpft das
+# Issue in der Development-Sidebar und schließt es beim Merge.
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: write   # nötig, um den PR-Body zu aktualisieren
+
+# Verhindert, dass sich mehrere Läufe auf demselben PR überholen
+concurrency:
+  group: link-subissues-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  link-subissues:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          # Für Sub-Issues aus ANDEREN (privaten) Repos reicht der GITHUB_TOKEN
+          # nicht -> hier stattdessen einen PAT als Secret hinterlegen:
+          # github-token: ${{ secrets.SUBISSUES_TOKEN }}
+          script: |
+            const START = '<!-- sub-issues:start -->';
+            const END   = '<!-- sub-issues:end -->';
+
+            // Manche Repos/Orgs brauchen (noch) diesen Preview-Header.
+            // Schadet nicht, wenn das Feature bereits GA ist.
+            const gqlHeaders = { 'GraphQL-Features': 'sub_issues' };
+
+            const owner = context.repo.owner;
+            const repo  = context.repo.repo;
+            const pr    = context.payload.pull_request;
+            const body  = pr.body || '';
+
+            // Body ohne den bereits von uns verwalteten Block betrachten,
+            // damit wir Referenzen im "handgeschriebenen" Teil finden.
+            const bodyWithoutBlock = body.replace(
+              new RegExp(`${START}[\\s\\S]*?${END}`, 'g'), ''
+            );
+
+            // 1) Seed-Issues aus den Closing-Keywords des PR-Textes lesen.
+            //    Erlaubt "#123" und "owner/repo#123".
+            const refRegex =
+              /\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\b\s*:?\s+(?:([\w.-]+)\/([\w.-]+))?#(\d+)/gi;
+
+            const key = (o, r, n) => `${o}/${r}#${n}`;
+            const seeds = [];
+            let m;
+            while ((m = refRegex.exec(bodyWithoutBlock)) !== null) {
+              seeds.push({
+                owner: m[1] || owner,
+                repo:  m[2] || repo,
+                number: parseInt(m[3], 10),
+              });
+            }
+
+            if (seeds.length === 0) {
+              core.info('Keine Parent-Issue-Referenz (Closes/Fixes/Resolves #N) im PR gefunden – nichts zu tun.');
+              return;
+            }
+
+            // 2) Sub-Issues eines Issues holen (mit Pagination).
+            async function getSubIssues(o, r, n) {
+              const query = `
+                query($owner:String!, $repo:String!, $number:Int!, $cursor:String) {
+                  repository(owner:$owner, name:$repo) {
+                    issue(number:$number) {
+                      subIssues(first:100, after:$cursor) {
+                        pageInfo { hasNextPage endCursor }
+                        nodes {
+                          number
+                          repository { name owner { login } }
+                        }
+                      }
+                    }
+                  }
+                }`;
+              const out = [];
+              let cursor = null;
+              do {
+                let res;
+                try {
+                  res = await github.graphql(query, {
+                    owner: o, repo: r, number: n, cursor, headers: gqlHeaders,
+                  });
+                } catch (e) {
+                  core.warning(`Konnte Sub-Issues von ${key(o, r, n)} nicht lesen: ${e.message}`);
+                  break;
+                }
+                const issue = res?.repository?.issue;
+                if (!issue) break;
+                for (const node of issue.subIssues.nodes) {
+                  out.push({
+                    owner: node.repository.owner.login,
+                    repo:  node.repository.name,
+                    number: node.number,
+                  });
+                }
+                cursor = issue.subIssues.pageInfo.hasNextPage
+                  ? issue.subIssues.pageInfo.endCursor
+                  : null;
+              } while (cursor);
+              return out;
+            }
+
+            // 3) Baum rekursiv ablaufen (BFS) – alle Nachfahren sammeln.
+            const visited = new Set();
+            const descendants = new Map(); // key -> {owner,repo,number}
+            const queue = [...seeds];
+
+            while (queue.length > 0) {
+              const cur = queue.shift();
+              const curKey = key(cur.owner, cur.repo, cur.number);
+              if (visited.has(curKey)) continue;   // Schutz gegen Zyklen
+              visited.add(curKey);
+
+              const children = await getSubIssues(cur.owner, cur.repo, cur.number);
+              for (const child of children) {
+                const ck = key(child.owner, child.repo, child.number);
+                if (!descendants.has(ck)) descendants.set(ck, child);
+                if (!visited.has(ck)) queue.push(child);   // -> darunterliegende automatisch mit
+              }
+            }
+
+            if (descendants.size === 0) {
+              core.info('Keine Sub-Issues gefunden – nichts anzuhängen.');
+              return;
+            }
+
+            // 4) "Closes"-Zeilen bauen. Gleiches Repo -> #N, sonst owner/repo#N.
+            const lines = [...descendants.values()]
+              .sort((a, b) => a.number - b.number)
+              .map(({ owner: o, repo: r, number: n }) =>
+                (o === owner && r === repo) ? `Closes #${n}` : `Closes ${o}/${r}#${n}`);
+
+            const block = `${START}\n${lines.join('\n')}\n${END}`;
+
+            // 5) Verwalteten Block ersetzen oder am Ende anhängen.
+            let newBody;
+            if (body.includes(START) && body.includes(END)) {
+              newBody = body.replace(
+                new RegExp(`${START}[\\s\\S]*?${END}`), block
+              );
+            } else {
+              newBody = (body.trim() + `\n\n${block}\n`).trimStart();
+            }
+
+            // 6) Nur updaten, wenn sich wirklich etwas ändert (verhindert Loops).
+            if (newBody === body) {
+              core.info('PR-Body ist bereits aktuell.');
+              return;
+            }
+
+            await github.rest.pulls.update({
+              owner, repo,
+              pull_number: pr.number,
+              body: newBody,
+            });
+
+            core.info(`${lines.length} Sub-Issue(s) an den PR angehängt.`);
