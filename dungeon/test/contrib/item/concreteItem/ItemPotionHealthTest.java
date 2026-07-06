@@ -3,13 +3,26 @@ package contrib.item.concreteItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import contrib.components.HealthComponent;
+import contrib.components.InventoryComponent;
 import contrib.item.HealthPotionType;
+import contrib.utils.components.health.DamageType;
+import core.Entity;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class ItemPotionHealthTest {
+
+  @Test
+  void defaultConstructor_ShouldCreateWeakPotion() {
+    ItemPotionHealth potion = new ItemPotionHealth();
+
+    assertEquals(HealthPotionType.WEAK, potion.type());
+    assertEquals(HealthPotionType.WEAK.getHealAmount(), potion.healAmount());
+  }
 
   @Test
   void type_ShouldReturnPotionType() {
@@ -85,6 +98,91 @@ class ItemPotionHealthTest {
     assertEquals(potion1.hashCode(), potion2.hashCode());
   }
 
+  @Test
+  void match_ShouldReturnTrueForSameHealAmount() {
+    ItemPotionHealth potion1 = new ItemPotionHealth(HealthPotionType.WEAK);
+    ItemPotionHealth potion2 = new ItemPotionHealth(HealthPotionType.WEAK);
+
+    assertTrue(potion1.match(potion2));
+  }
+
+  @Test
+  void match_ShouldReturnFalseForDifferentHealAmount() {
+    ItemPotionHealth potion1 = new ItemPotionHealth(HealthPotionType.WEAK);
+    ItemPotionHealth potion2 = new ItemPotionHealth(typeWithDifferentHealAmount());
+
+    assertFalse(potion1.match(potion2));
+  }
+
+  @Test
+  void match_ShouldReturnFalseForDifferentItemClass() {
+    ItemPotionHealth potion = new ItemPotionHealth(HealthPotionType.WEAK);
+    ItemKey key = new ItemKey();
+
+    assertFalse(potion.match(key));
+  }
+
+  @Test
+  void match_ShouldReturnFalseForNull() {
+    ItemPotionHealth potion = new ItemPotionHealth(HealthPotionType.WEAK);
+
+    assertFalse(potion.match(null));
+  }
+
+  @Test
+  void use_ShouldRemovePotionAndHealEntityWithInventoryAndHealthComponent() {
+    Entity entity = new Entity();
+    InventoryComponent inventory = new InventoryComponent();
+    HealthComponent health = new HealthComponent(50);
+    ItemPotionHealth potion = new ItemPotionHealth(HealthPotionType.WEAK);
+
+    inventory.add(potion);
+    entity.add(inventory);
+    entity.add(health);
+
+    potion.use(entity);
+
+    assertEquals(0, inventory.count());
+    assertEquals(
+      -HealthPotionType.WEAK.getHealAmount(),
+      health.calculateDamageOf(DamageType.HEAL));
+  }
+
+  @Test
+  void use_ShouldRemovePotionWithoutHealingWhenHealthComponentIsMissing() {
+    Entity entity = new Entity();
+    InventoryComponent inventory = new InventoryComponent();
+    ItemPotionHealth potion = new ItemPotionHealth(HealthPotionType.WEAK);
+
+    inventory.add(potion);
+    entity.add(inventory);
+
+    potion.use(entity);
+
+    assertEquals(0, inventory.count());
+  }
+
+  @Test
+  void use_ShouldNotConsumePotionOrHealWhenInventoryIsMissing() {
+    Entity entity = new Entity();
+    HealthComponent health = new HealthComponent(50);
+    ItemPotionHealth potion = new ItemPotionHealth(HealthPotionType.WEAK);
+
+    entity.add(health);
+
+    potion.use(entity);
+
+    assertEquals(1, potion.stackSize());
+    assertEquals(0, health.calculateDamageOf(DamageType.HEAL));
+  }
+
+  @Test
+  void use_ShouldThrowNullPointerExceptionForNullEntity() {
+    ItemPotionHealth potion = new ItemPotionHealth(HealthPotionType.WEAK);
+
+    assertThrows(NullPointerException.class, () -> potion.use(null));
+  }
+
   private static HealthPotionType typeWithDifferentHealAmount() {
     for (HealthPotionType type : HealthPotionType.values()) {
       if (type.getHealAmount() != HealthPotionType.WEAK.getHealAmount()) {
@@ -95,10 +193,6 @@ class ItemPotionHealthTest {
   }
 
   private static class TestableItemPotionHealth extends ItemPotionHealth {
-
-    private TestableItemPotionHealth(HealthPotionType type) {
-      super(type);
-    }
 
     private static String potionTypeKey() {
       return DATA_KEY_POTION_TYPE;
