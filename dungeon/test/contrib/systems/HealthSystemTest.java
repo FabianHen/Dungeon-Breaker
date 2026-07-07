@@ -78,5 +78,3 @@ public class HealthSystemTest {
     assertThrows(NullPointerException.class, () -> system.calculateDamagePublic(null));
   }
 }
-
-
