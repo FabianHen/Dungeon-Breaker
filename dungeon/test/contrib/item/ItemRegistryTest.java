@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import core.utils.components.draw.animation.Animation;
 import java.util.Map;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -105,7 +104,7 @@ public class ItemRegistryTest {
   @Test
   void register_withFactory_shouldCreateItem() {
     ItemRegistry.register(
-      "ID", Item.class, data -> new Item("Test", "Description", (Animation) null));
+        "ID", Item.class, data -> new Item("Test", "Description", (Animation) null));
 
     var result = ItemRegistry.create("ID", Map.of());
 
@@ -118,8 +117,7 @@ public class ItemRegistryTest {
   void registerFactory_shouldRegisterFactory() {
     ItemRegistry.register("ID", Item.class);
 
-    ItemRegistry.registerFactory(
-      "ID", data -> new Item("Test", "Description", (Animation) null));
+    ItemRegistry.registerFactory("ID", data -> new Item("Test", "Description", (Animation) null));
 
     var result = ItemRegistry.create("ID", Map.of());
 
@@ -149,7 +147,7 @@ public class ItemRegistryTest {
   @Test
   void create_withNullData_shouldWork() {
     ItemRegistry.register(
-      "ID", Item.class, data -> new Item("Test", "Description", (Animation) null));
+        "ID", Item.class, data -> new Item("Test", "Description", (Animation) null));
 
     var result = ItemRegistry.create("ID", null);
 
