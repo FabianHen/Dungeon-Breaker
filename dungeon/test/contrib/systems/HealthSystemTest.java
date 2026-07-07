@@ -82,13 +82,11 @@ public class HealthSystemTest {
     assertThrows(NullPointerException.class, () -> system.calculateDamagePublic(null));
   }
 
-
-
   /**
-   * Tests that applying damage without any pending damage does not change
-   * the health points and does not trigger a damage signal.
+   * Tests that applying damage without any pending damage does not change the health points and
+   * does not trigger a damage signal.
    *
-   * <p>The observer should still receive a damage event notification.</p>
+   * <p>The observer should still receive a damage event notification.
    */
   @Test
   void applyDamageNoDamage() {
@@ -116,13 +114,11 @@ public class HealthSystemTest {
     assertEquals(data, observer.lastData());
   }
 
-
   /**
    * Tests that a single damage instance is correctly applied.
    *
-   * <p>The received damage should be removed from the HealthComponent,
-   * the current health points should decrease, and the DrawComponent
-   * should receive a damage signal.</p>
+   * <p>The received damage should be removed from the HealthComponent, the current health points
+   * should decrease, and the DrawComponent should receive a damage signal.
    */
   @Test
   void applyDamageSingleDamage() {
@@ -153,12 +149,10 @@ public class HealthSystemTest {
   }
 
   /**
-   * Tests that multiple damage instances of different damage types
-   * are correctly processed.
+   * Tests that multiple damage instances of different damage types are correctly processed.
    *
-   * <p>The total damage amount should be subtracted from the health points,
-   * all stored damage values should be cleared, and the observer should
-   * receive a damage event.</p>
+   * <p>The total damage amount should be subtracted from the health points, all stored damage
+   * values should be cleared, and the observer should receive a damage event.
    */
   @Test
   void applyDamageMultipleDamage() {
@@ -192,60 +186,43 @@ public class HealthSystemTest {
   }
 
   /**
-   * Tests that applying damage without a DrawComponent throws a
-   * NullPointerException.
+   * Tests that applying damage without a DrawComponent throws a NullPointerException.
    *
-   * <p>The HealthSystem requires a DrawComponent to send damage signals.</p>
+   * <p>The HealthSystem requires a DrawComponent to send damage signals.
    */
   @Test
   void applyDamageWithoutDrawComponent() {
     HealthComponent hc = new HealthComponent(100);
     hc.receiveHit(new Damage(10, DamageType.PHYSICAL, null));
 
-    MockHealthSystem.HSData data =
-      new MockHealthSystem.HSData(entity, hc, null);
+    MockHealthSystem.HSData data = new MockHealthSystem.HSData(entity, hc, null);
 
-    assertThrows(
-      NullPointerException.class,
-      () -> system.applyDamagePublic(data)
-    );
+    assertThrows(NullPointerException.class, () -> system.applyDamagePublic(data));
   }
 
   /**
-   * Tests that applying damage without a HealthComponent throws a
-   * NullPointerException.
+   * Tests that applying damage without a HealthComponent throws a NullPointerException.
    *
-   * <p>A HealthComponent is required because it stores and processes
-   * the entity's health and damage values.</p>
+   * <p>A HealthComponent is required because it stores and processes the entity's health and damage
+   * values.
    */
   @Test
   void applyDamageWithoutHealthComponent() {
 
     DrawComponent dc = mock(DrawComponent.class);
 
-    MockHealthSystem.HSData data =
-      new MockHealthSystem.HSData(entity, null, dc);
+    MockHealthSystem.HSData data = new MockHealthSystem.HSData(entity, null, dc);
 
-    assertThrows(
-      NullPointerException.class,
-      () -> system.applyDamagePublic(data)
-    );
+    assertThrows(NullPointerException.class, () -> system.applyDamagePublic(data));
   }
+
   /**
    * Tests that passing null HealthSystem data causes a NullPointerException.
    *
-   * <p>The HealthSystem requires valid HSData to process damage.</p>
+   * <p>The HealthSystem requires valid HSData to process damage.
    */
   @Test
   void applyDamageWithNullHSData() {
-    assertThrows(
-      NullPointerException.class,
-      () -> system.applyDamagePublic(null)
-    );
+    assertThrows(NullPointerException.class, () -> system.applyDamagePublic(null));
   }
-
-
-
-
-
 }
