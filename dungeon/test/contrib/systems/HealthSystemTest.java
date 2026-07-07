@@ -26,7 +26,7 @@ public class HealthSystemTest {
 
     DrawComponent dc = mock(DrawComponent.class);
 
-    HealthSystem.HSData data = new HealthSystem.HSData(entity, hc, dc);
+    MockHealthSystem.HSData data = new MockHealthSystem.HSData(entity, hc, dc);
 
     assertEquals(10, system.calculateDamagePublic(data));
   }
@@ -40,7 +40,7 @@ public class HealthSystemTest {
 
     DrawComponent dc = mock(DrawComponent.class);
 
-    HealthSystem.HSData data = new HealthSystem.HSData(entity, hc, dc);
+    MockHealthSystem.HSData data = new MockHealthSystem.HSData(entity, hc, dc);
 
     assertEquals(25, system.calculateDamagePublic(data));
   }
@@ -52,7 +52,7 @@ public class HealthSystemTest {
 
     DrawComponent dc = mock(DrawComponent.class);
 
-    HealthSystem.HSData data = new HealthSystem.HSData(entity, hc, dc);
+    MockHealthSystem.HSData data = new MockHealthSystem.HSData(entity, hc, dc);
 
     assertEquals(0, system.calculateDamagePublic(data));
   }
@@ -67,7 +67,7 @@ public class HealthSystemTest {
 
     DrawComponent dc = mock(DrawComponent.class);
 
-    HealthSystem.HSData data = new HealthSystem.HSData(entity, hc, dc);
+    MockHealthSystem.HSData data = new MockHealthSystem.HSData(entity, hc, dc);
 
     assertEquals(15, system.calculateDamagePublic(data));
   }
@@ -78,3 +78,5 @@ public class HealthSystemTest {
     assertThrows(NullPointerException.class, () -> system.calculateDamagePublic(null));
   }
 }
+
+

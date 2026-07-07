@@ -33,8 +33,8 @@ public class MockHealthSystem extends HealthSystem {
 
     Map<Boolean, List<HSData>> deadOrAlive =
         game.allEntities()
-            .filter(e -> e.isPresent(FakeHealthComponent.class))
-            .filter(e -> e.isPresent(FakeDrawComponent.class))
+            .filter(e -> e.isPresent(HealthComponent.class))
+            .filter(e -> e.isPresent(HealthComponent.class))
             .map(
                 e ->
                     new HSData(
