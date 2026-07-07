@@ -133,6 +133,7 @@ public class DecoTestSystem extends System {
       case ModifyOffsetY -> modifyOffset(false, change);
       case ModifySizeWidth -> modifySize(true, change);
       case ModifySizeHeight -> modifySize(false, change);
+      default -> throw new IllegalStateException("Unexpected mode: " + currentMode);
     }
     if (currentMode != Mode.ChangeDeco) {
       copyColliderInfoToClipboard();
