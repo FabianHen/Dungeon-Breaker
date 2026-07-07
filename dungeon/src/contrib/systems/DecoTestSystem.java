@@ -3,12 +3,13 @@ package contrib.systems;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import contrib.DefaultGameProvider;
+import contrib.GameProvider;
 import contrib.components.CollideComponent;
 import contrib.entities.deco.Deco;
 import contrib.entities.deco.DecoFactory;
 import contrib.utils.components.skill.SkillTools;
 import core.Entity;
-import core.Game;
 import core.System;
 import core.components.PositionComponent;
 import core.systems.input.InputManager;
@@ -36,9 +37,21 @@ public class DecoTestSystem extends System {
   private Deco currentDeco;
   private Mode currentMode = Mode.ChangeDeco;
   private BitmapFont font;
+  private final GameProvider game;
 
-  /** Constructor for DecoTestSystem. */
-  public DecoTestSystem() {}
+  /** Creates a new DecoTestSystem with a DefaultGameProvider. */
+  public DecoTestSystem() {
+    this(new DefaultGameProvider());
+  }
+
+  /**
+   * Creates a new DecoTestSystem with the given GameProvider.
+   *
+   * @param game The game provider to be used.
+   */
+  public DecoTestSystem(GameProvider game) {
+    this.game = game;
+  }
 
   /** Executes the system. */
   @Override
@@ -139,9 +152,9 @@ public class DecoTestSystem extends System {
             .map(PositionComponent::position)
             .orElse(new Point(0, 0));
 
-    Game.remove(testEntity);
+    game.remove(testEntity);
     testEntity = DecoFactory.createDeco(oldPos, currentDeco);
-    Game.add(testEntity);
+    game.add(testEntity);
   }
 
   void createTestEntity() {
@@ -153,7 +166,7 @@ public class DecoTestSystem extends System {
   void createTestEntity(Point position, Deco deco) {
     currentDeco = deco;
     testEntity = DecoFactory.createDeco(position, deco);
-    Game.add(testEntity);
+    game.add(testEntity);
   }
 
   void modifyOffset(boolean x, int change) {
