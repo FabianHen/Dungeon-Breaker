@@ -20,6 +20,7 @@ public class MockHealthSystem extends HealthSystem {
   public MockHealthSystem(FakeGame game) {
     this.game = game;
   }
+
   /**
    * Exposes the protected {@link HealthSystem#applyDamage(HSData)} method for testing.
    *
@@ -29,6 +30,7 @@ public class MockHealthSystem extends HealthSystem {
   public HSData applyDamagePublic(HSData data) {
     return super.applyDamage(data);
   }
+
   /**
    * Exposes the protected {@link HealthSystem#calculateDamage(HSData)} method for testing.
    *
@@ -38,6 +40,7 @@ public class MockHealthSystem extends HealthSystem {
   public int calculateDamagePublic(HSData data) {
     return super.calculateDamage(data);
   }
+
   /**
    * Exposes the protected {@link HealthSystem#triggerOnDeath(HSData)} method for testing.
    *
@@ -46,6 +49,7 @@ public class MockHealthSystem extends HealthSystem {
   public void triggerOnDeathPublic(HSData data) {
     super.triggerOnDeath(data);
   }
+
   /**
    * Executes the mock health system on all entities of the associated {@link FakeGame}.
    *
