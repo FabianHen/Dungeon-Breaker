@@ -1,13 +1,16 @@
 package contrib.systems;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 import contrib.components.HealthComponent;
 import contrib.utils.components.health.Damage;
 import contrib.utils.components.health.DamageType;
 import contrib.utils.components.health.FakeHealthObserver;
-import contrib.utils.components.health.IHealthObserver;
 import core.Entity;
 import core.FakeGame;
 import core.components.DrawComponent;
