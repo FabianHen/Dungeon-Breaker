@@ -225,4 +225,157 @@ public class HealthSystemTest {
   void applyDamageWithNullHSData() {
     assertThrows(NullPointerException.class, () -> system.applyDamagePublic(null));
   }
+
+
+  /**
+   * Tests that an entity is marked as already dead after the death trigger.
+   *
+   * <p>The HealthComponent should update its alreadyDead state to prevent
+   * multiple death executions.</p>
+   */
+  @Test
+  void triggerOnDeathMarksEntityAsAlreadyDead() {
+
+    HealthComponent hc = new HealthComponent(0);
+    DrawComponent dc = mock(DrawComponent.class);
+
+    MockHealthSystem.HSData data =
+      new MockHealthSystem.HSData(entity, hc, dc);
+
+
+    system.triggerOnDeathPublic(data);
+
+
+    assertTrue(hc.alreadyDead());
+  }
+
+  /**
+   * Tests that all registered observers receive a DEATH event.
+   *
+   * <p>The observer should receive the same HSData instance that was passed
+   * to the HealthSystem.</p>
+   */
+  @Test
+  void triggerOnDeathNotifiesObservers() {
+
+    HealthComponent hc = new HealthComponent(0);
+    DrawComponent dc = mock(DrawComponent.class);
+
+    MockHealthSystem.HSData data =
+      new MockHealthSystem.HSData(entity, hc, dc);
+
+    FakeHealthObserver observer = new FakeHealthObserver();
+    system.registerObserver(observer);
+
+
+    system.triggerOnDeathPublic(data);
+
+
+    assertTrue(observer.eventReceived());
+    assertEquals(
+      FakeHealthObserver.HealthEvent.DEATH,
+      observer.lastEvent()
+    );
+    assertEquals(data, observer.lastData());
+  }
+
+
+
+  /**
+   * Tests that the registered On-Death callback is executed.
+   *
+   * <p>The callback should be called when the death handling is triggered.</p>
+   */
+  @Test
+  void triggerOnDeathExecutesCallback() {
+
+    HealthComponent hc = new HealthComponent(0);
+    DrawComponent dc = mock(DrawComponent.class);
+
+    boolean[] callbackExecuted = {false};
+
+
+    hc.onDeath(entity -> callbackExecuted[0] = true);
+
+
+    MockHealthSystem.HSData data =
+      new MockHealthSystem.HSData(entity, hc, dc);
+
+
+    system.triggerOnDeathPublic(data);
+
+
+    assertTrue(callbackExecuted[0]);
+  }
+
+
+  /**
+   * Tests that death handling works without registered observers.
+   *
+   * <p>The entity should still be marked as dead and the On-Death callback
+   * should still be executed even when no observer exists.</p>
+   */
+  @Test
+  void triggerOnDeathWithoutObservers() {
+
+    HealthComponent hc = new HealthComponent(0);
+    DrawComponent dc = mock(DrawComponent.class);
+
+    boolean[] callbackExecuted = {false};
+
+
+    hc.onDeath(entity -> callbackExecuted[0] = true);
+
+
+    MockHealthSystem.HSData data =
+      new MockHealthSystem.HSData(entity, hc, dc);
+
+
+    system.triggerOnDeathPublic(data);
+
+
+    assertTrue(hc.alreadyDead());
+    assertTrue(callbackExecuted[0]);
+  }
+
+  /**
+   * Tests that triggering death without a HealthComponent throws an exception.
+   *
+   * <p>A HealthComponent is required because the death state and callback
+   * are stored inside it.</p>
+   */
+  @Test
+  void triggerOnDeathWithoutHealthComponent() {
+
+    DrawComponent dc = mock(DrawComponent.class);
+
+
+    MockHealthSystem.HSData data =
+      new MockHealthSystem.HSData(entity, null, dc);
+
+
+    assertThrows(
+      NullPointerException.class,
+      () -> system.triggerOnDeathPublic(data)
+    );
+  }
+
+
+
+  /**
+   * Tests that triggering death with null HSData throws an exception.
+   *
+   * <p>The HealthSystem requires valid data to process entity death.</p>
+   */
+  @Test
+  void triggerOnDeathWithNullHSData() {
+
+    assertThrows(
+      NullPointerException.class,
+      () -> system.triggerOnDeathPublic(null)
+    );
+  }
+
+
+
 }
