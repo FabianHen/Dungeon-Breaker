@@ -7,8 +7,8 @@ import java.util.stream.Stream;
 /**
  * A lightweight game implementation used for testing purposes.
  *
- * <p>This class stores entities independently of the game framework and provides
- * methods to add, remove, filter and clear entities.
+ * <p>This class stores entities independently of the game framework and provides methods to add,
+ * remove, filter and clear entities.
  */
 public class FakeGame {
 
@@ -24,6 +24,7 @@ public class FakeGame {
     entities.add(entity);
     return entity;
   }
+
   /**
    * Removes an entity from the fake game.
    *
@@ -56,9 +57,7 @@ public class FakeGame {
         .filter(entity -> java.util.Arrays.stream(components).allMatch(entity::isPresent));
   }
 
-  /**
-   * Removes all entities from the fake game.
-   */
+  /** Removes all entities from the fake game. */
   public void clear() {
     entities.clear();
   }
