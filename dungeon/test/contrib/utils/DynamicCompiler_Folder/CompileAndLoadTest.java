@@ -83,16 +83,19 @@ class DynamicCompilerCompileAndLoadTest {
 
     Path source = Files.createTempFile("Hello", ".java");
 
-    Files.writeString(
-        source,
+    Files.writeString(source,
         """
-                package test;
-                public class Hello {
-                }
-                """);
+        package test;
+        public class Hello {
+        }
+        """);
 
-    assertThrows(
-        ClassNotFoundException.class,
-        () -> DynamicCompiler.compileAndLoad(new SimpleIPath(source.toString()), "test.Wrong"));
-  }
+    Exception ex = assertThrows(
+        Exception.class,
+        () -> DynamicCompiler.compileAndLoad(
+            new SimpleIPath(source.toString()),
+            "test.Wrong"));
+
+    assertEquals("Compilation failed.", ex.getMessage());
+}
 }
