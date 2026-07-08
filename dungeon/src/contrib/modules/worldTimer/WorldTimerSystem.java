@@ -34,7 +34,7 @@ public class WorldTimerSystem extends System {
   private static FontSpec TIMER_FONT =
       new FontSpec("fonts/Doto_Rounded-ExtraBold.ttf", HEIGHT, Color.RED, 0, Color.WHITE);
   private static BitmapFont FONT;
-  private static SpriteBatch BATCH = new SpriteBatch();
+  private static SpriteBatch BATCH;
 
   private int currentUnixTime;
 
@@ -47,7 +47,6 @@ public class WorldTimerSystem extends System {
   /** Create a new WorldTimerSystem. */
   public WorldTimerSystem() {
     super(AuthoritativeSide.CLIENT, 5, WorldTimerComponent.class, PositionComponent.class);
-    FONT = FontHelper.getFont(TIMER_FONT);
   }
 
   /**
@@ -67,8 +66,12 @@ public class WorldTimerSystem extends System {
 
   @Override
   public void execute() {
-    currentUnixTime = (int) (java.lang.System.currentTimeMillis() / 1000L);
+    currentUnixTime = currentUnixTimeSeconds();
     filteredEntityStream().map(Data::of).forEach(this::update);
+  }
+
+  protected int currentUnixTimeSeconds() {
+    return (int) (java.lang.System.currentTimeMillis() / 1000L);
   }
 
   private void update(Data data) {
@@ -82,9 +85,18 @@ public class WorldTimerSystem extends System {
       }
     }
 
+    updateDrawComponent(data.e, formatTime(secondsLeft));
+  }
+
+  protected String formatTime(int secondsLeft) {
     int displaySeconds = Math.max(0, secondsLeft);
-    String timerString = String.format("%02d:%02d", displaySeconds / 60, displaySeconds % 60);
-    GlyphLayout layout = new GlyphLayout(FONT, timerString);
+    return String.format("%02d:%02d", displaySeconds / 60, displaySeconds % 60);
+  }
+
+  protected void updateDrawComponent(Entity entity, String timerString) {
+    BitmapFont font = font();
+    SpriteBatch batch = batch();
+    GlyphLayout layout = new GlyphLayout(font, timerString);
 
     int fboWidth = (int) layout.width + PADDING_X * 2;
     int fboHeight = HEIGHT + PADDING_Y * 2;
@@ -95,24 +107,38 @@ public class WorldTimerSystem extends System {
     Gdx.gl.glClearColor(0f, 0f, 0f, 1.0f);
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-    BATCH.setProjectionMatrix(new Matrix4().setToOrtho2D(0, 0, fboWidth, fboHeight));
-    BATCH.begin();
-    FONT.draw(BATCH, timerString, PADDING_X, HEIGHT - PADDING_Y);
-    BATCH.end();
+    batch.setProjectionMatrix(new Matrix4().setToOrtho2D(0, 0, fboWidth, fboHeight));
+    batch.begin();
+    font.draw(batch, timerString, PADDING_X, HEIGHT - PADDING_Y);
+    batch.end();
 
     Pixmap pixmap = Pixmap.createFromFrameBuffer(0, 0, fbo.getWidth(), fbo.getHeight());
     fbo.end();
     fbo.dispose();
 
-    String path = "@gen/worldTimer/" + data.e.name() + ".png";
+    String path = "@gen/worldTimer/" + entity.name() + ".png";
     IPath ipath = new SimpleIPath(path);
     TextureMap.instance().putPixmap(ipath, pixmap, true);
     TextureMap.instance()
         .textureAt(ipath)
         .setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
-    data.e.remove(DrawComponent.class);
-    data.e.add(new DrawComponent(new Animation(ipath, new AnimationConfig().scaleX(0.5f))));
+    entity.remove(DrawComponent.class);
+    entity.add(new DrawComponent(new Animation(ipath, new AnimationConfig().scaleX(0.5f))));
+  }
+
+  private static BitmapFont font() {
+    if (FONT == null) {
+      FONT = FontHelper.getFont(TIMER_FONT);
+    }
+    return FONT;
+  }
+
+  private static SpriteBatch batch() {
+    if (BATCH == null) {
+      BATCH = new SpriteBatch();
+    }
+    return BATCH;
   }
 
   @Override
