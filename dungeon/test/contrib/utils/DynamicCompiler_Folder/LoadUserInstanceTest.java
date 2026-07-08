@@ -27,15 +27,11 @@ class DynamicCompilerLoadUserInstanceTest {
         source,
         """
         package test;
-
         public class Person {
-
             private final String name;
-
             public Person(String name) {
                 this.name = name;
             }
-
             public String getName() {
                 return name;
             }
@@ -69,9 +65,7 @@ class DynamicCompilerLoadUserInstanceTest {
         source,
         """
         package test;
-
         public class Person {
-
             public Person(String name) {
             }
         }
