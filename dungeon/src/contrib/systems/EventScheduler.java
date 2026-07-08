@@ -3,9 +3,6 @@ package contrib.systems;
 import com.badlogic.gdx.utils.TimeUtils;
 import contrib.utils.IAction;
 import core.System;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-
 import java.util.PriorityQueue;
 
 /**
@@ -19,6 +16,7 @@ import java.util.PriorityQueue;
 public class EventScheduler extends System {
 
   private static final PriorityQueue<ScheduledAction> scheduledActions = new PriorityQueue<>();
+  private static Long millisForTesting = null;
 
   /**
    * Defines whether the {@code EventScheduler} is pausable.
@@ -51,7 +49,13 @@ public class EventScheduler extends System {
    * @return The scheduled action that was created and added to the list.
    */
   public static ScheduledAction scheduleAction(IAction action, long delayMillis) {
-    long executeAt = TimeUtils.millis() + delayMillis;
+    long executeAt = 0;
+    if (millisForTesting == null) {
+      executeAt = TimeUtils.millis() + delayMillis;
+    } else {
+      executeAt = millisForTesting + delayMillis;
+    }
+
     ScheduledAction scheduledAction = new ScheduledAction(action, executeAt);
     scheduledActions.add(scheduledAction);
     return scheduledAction;
@@ -105,6 +109,9 @@ public class EventScheduler extends System {
   @Override
   public void execute() {
     long currentTime = TimeUtils.millis();
+    if (millisForTesting != null) {
+      currentTime = millisForTesting;
+    }
 
     while (!scheduledActions.isEmpty()) {
       ScheduledAction scheduledAction = scheduledActions.peek();
@@ -151,14 +158,26 @@ public class EventScheduler extends System {
     else run = true;
   }
 
-
-  @BeforeEach
-  void setUp() {
-    EventScheduler.clear();
+  static void setMillisForTesting(long millis) {
+    millisForTesting = millis;
   }
 
-  @AfterEach
-  void tearDown() {
-    EventScheduler.clear();
+  static Long getMillisForTesting() {
+    return millisForTesting;
+  }
+
+  static Long increaseMillisForTesting() {
+    if (millisForTesting == null) millisForTesting = 0L;
+    return ++millisForTesting;
+  }
+
+  static Long increaseMillisForTesting(long millis) {
+    if (millisForTesting == null) millisForTesting = 0L;
+    millisForTesting += millis;
+    return millisForTesting;
+  }
+
+  static void resetMillisForTesting() {
+    millisForTesting = null;
   }
 }
