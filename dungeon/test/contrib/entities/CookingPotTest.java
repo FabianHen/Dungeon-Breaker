@@ -2,16 +2,16 @@ package contrib.entities;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import contrib.modules.interaction.InteractionComponent;
+import contrib.components.CollideComponent;
 import contrib.components.InventoryComponent;
+import contrib.item.Item;
+import contrib.item.concreteItem.ItemHeart;
+import contrib.item.concreteItem.ItemKey;
+import contrib.modules.interaction.InteractionComponent;
+import core.Entity;
 import core.components.DrawComponent;
 import core.components.PositionComponent;
-import contrib.components.CollideComponent;
-import core.Entity;
 import core.utils.Point;
-import contrib.item.Item;
-import contrib.item.concreteItem.ItemKey;
-import contrib.item.concreteItem.ItemHeart;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -115,13 +115,14 @@ public class CookingPotTest {
     interactor.add(new InventoryComponent(6));
 
     InteractionComponent ic = pot.fetch(InteractionComponent.class).get();
-    assertDoesNotThrow(() -> {
-      try {
-        ic.triggerInteraction(pot, interactor);
-      } catch (Throwable t) {
-        // Headless-UI catch
-      }
-    });
+    assertDoesNotThrow(
+        () -> {
+          try {
+            ic.triggerInteraction(pot, interactor);
+          } catch (Throwable t) {
+            // Headless-UI catch
+          }
+        });
   }
 
   /*
@@ -136,13 +137,14 @@ public class CookingPotTest {
     interactor.add(new InventoryComponent(6));
 
     InteractionComponent ic = pot.fetch(InteractionComponent.class).get();
-    assertDoesNotThrow(() -> {
-      try {
-        ic.triggerInteraction(pot, interactor);
-      } catch (Throwable t) {
-        // Headless-UI catch
-      }
-    });
+    assertDoesNotThrow(
+        () -> {
+          try {
+            ic.triggerInteraction(pot, interactor);
+          } catch (Throwable t) {
+            // Headless-UI catch
+          }
+        });
   }
 
   /*
@@ -186,9 +188,11 @@ public class CookingPotTest {
    */
   @Test
   public void test_U4_items_varargs_null() {
-    assertThrows(NullPointerException.class, () -> {
-      MiscFactory.cookingPot(new Point(0, 0), 4, (Item[]) null);
-    });
+    assertThrows(
+        NullPointerException.class,
+        () -> {
+          MiscFactory.cookingPot(new Point(0, 0), 4, (Item[]) null);
+        });
   }
 
   /*
