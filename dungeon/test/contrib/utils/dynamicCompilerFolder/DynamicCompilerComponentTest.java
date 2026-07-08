@@ -1,6 +1,6 @@
 package contrib.utils.dynamicCompilerFolder;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import contrib.utils.DynamicCompiler;
 import core.utils.Tuple;
