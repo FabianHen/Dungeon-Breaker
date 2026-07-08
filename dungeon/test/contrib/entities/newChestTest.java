@@ -13,10 +13,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests für die Methode MiscFactory.newChest(FILL_CHEST type)
- * Zugehörige Issue-Nummer: #137
- */
+/** Tests für die Methode MiscFactory.newChest(FILL_CHEST type) Zugehörige Issue-Nummer: #137 */
 public class newChestTest {
 
   private ItemGenerator originalGenerator;
@@ -107,9 +104,11 @@ public class newChestTest {
    */
   @Test
   public void test_U1_type_is_null() {
-    assertThrows(NullPointerException.class, () -> {
-      MiscFactory.newChest(null);
-    });
+    assertThrows(
+        NullPointerException.class,
+        () -> {
+          MiscFactory.newChest(null);
+        });
   }
 
   /*
