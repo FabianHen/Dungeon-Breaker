@@ -49,12 +49,7 @@ public class EventScheduler extends System {
    * @return The scheduled action that was created and added to the list.
    */
   public static ScheduledAction scheduleAction(IAction action, long delayMillis) {
-    long executeAt = 0;
-    if (millisForTesting == null) {
-      executeAt = TimeUtils.millis() + delayMillis;
-    } else {
-      executeAt = millisForTesting + delayMillis;
-    }
+    long executeAt = currentMillis() + delayMillis;
 
     ScheduledAction scheduledAction = new ScheduledAction(action, executeAt);
     scheduledActions.add(scheduledAction);
@@ -108,10 +103,7 @@ public class EventScheduler extends System {
    */
   @Override
   public void execute() {
-    long currentTime = TimeUtils.millis();
-    if (millisForTesting != null) {
-      currentTime = millisForTesting;
-    }
+    long currentTime = currentMillis();
 
     while (!scheduledActions.isEmpty()) {
       ScheduledAction scheduledAction = scheduledActions.peek();
@@ -157,6 +149,30 @@ public class EventScheduler extends System {
     if (pausable) run = false;
     else run = true;
   }
+
+  /**
+   * Returns the current time used by the scheduler.
+   *
+   * <p>During normal execution, the real time is used. During tests, a fixed test time can
+   * be set to make scheduled actions deterministic and independent of real time.
+   *
+   * @return the current time in milliseconds
+   */
+  private static long currentMillis() {
+    if (millisForTesting == null) {
+      return TimeUtils.millis();
+    }
+    return millisForTesting;
+  }
+
+
+  /*
+   * Test support methods.
+   *
+   * These methods allow tests in the same package to control scheduler time without exposing this
+   * functionality as part of the public API.
+   */
+
 
   static void setMillisForTesting(long millis) {
     millisForTesting = millis;

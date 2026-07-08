@@ -15,5 +15,6 @@ public class EventSchedulerTest {
   void tearDown() {
     EventScheduler.clear();
     EventScheduler.resetMillisForTesting();
+    EventScheduler.setPausable(true);
   }
 }
