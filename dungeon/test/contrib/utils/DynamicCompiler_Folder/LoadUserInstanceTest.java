@@ -1,5 +1,8 @@
 package contrib.utils.DynamicCompiler_Folder;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import contrib.utils.DynamicCompiler;
 import core.utils.Tuple;
 import core.utils.components.path.SimpleIPath;
 import java.nio.file.Files;
@@ -7,24 +10,22 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-import contrib.utils.DynamicCompiler;
-
 class DynamicCompilerLoadUserInstanceTest {
 
-    @BeforeEach
-    void setup() throws Exception {
-        Path tempDir = Files.createTempDirectory("dynamicCompiler");
-        System.setProperty("BASEREFLECTIONDIR", tempDir.toString());
-    }
+  @BeforeEach
+  void setup() throws Exception {
+    Path tempDir = Files.createTempDirectory("dynamicCompiler");
+    System.setProperty("BASEREFLECTIONDIR", tempDir.toString());
+  }
 
-    @Test
-    void loadUserInstanceCreatesObject() throws Exception {
+  @Test
+  void loadUserInstanceCreatesObject() throws Exception {
 
-        Path source = Files.createTempFile("Person", ".java");
+    Path source = Files.createTempFile("Person", ".java");
 
-        Files.writeString(source,
-                """
+    Files.writeString(
+        source,
+        """
                 package test;
 
                 public class Person {
@@ -41,34 +42,32 @@ class DynamicCompilerLoadUserInstanceTest {
                 }
                 """);
 
-        Object object =
-                DynamicCompiler.loadUserInstance(
-                        new SimpleIPath(source.toString()),
-                        "test.Person",
-                        new Tuple<>(String.class, "Alice"));
+    Object object =
+        DynamicCompiler.loadUserInstance(
+            new SimpleIPath(source.toString()), "test.Person", new Tuple<>(String.class, "Alice"));
 
-        assertNotNull(object);
-        assertEquals("test.Person", object.getClass().getName());
-    }
+    assertNotNull(object);
+    assertEquals("test.Person", object.getClass().getName());
+  }
 
-    @Test
-    void loadUserInstanceThrowsIllegalArgumentExceptionForNullArgs() {
+  @Test
+  void loadUserInstanceThrowsIllegalArgumentExceptionForNullArgs() {
 
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> DynamicCompiler.loadUserInstance(
-                        null,
-                        "test.Person",
-                        (Tuple<Class<?>, Object>[]) null));
-    }
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            DynamicCompiler.loadUserInstance(
+                null, "test.Person", (Tuple<Class<?>, Object>[]) null));
+  }
 
-    @Test
-    void loadUserInstanceThrowsExceptionForWrongConstructor() throws Exception {
+  @Test
+  void loadUserInstanceThrowsExceptionForWrongConstructor() throws Exception {
 
-        Path source = Files.createTempFile("Person", ".java");
+    Path source = Files.createTempFile("Person", ".java");
 
-        Files.writeString(source,
-                """
+    Files.writeString(
+        source,
+        """
                 package test;
 
                 public class Person {
@@ -79,11 +78,10 @@ class DynamicCompilerLoadUserInstanceTest {
                 }
                 """);
 
-        assertThrows(
-                NoSuchMethodException.class,
-                () -> DynamicCompiler.loadUserInstance(
-                        new SimpleIPath(source.toString()),
-                        "test.Person",
-                        new Tuple<>(Integer.class, 5)));
-    }
+    assertThrows(
+        NoSuchMethodException.class,
+        () ->
+            DynamicCompiler.loadUserInstance(
+                new SimpleIPath(source.toString()), "test.Person", new Tuple<>(Integer.class, 5)));
+  }
 }
