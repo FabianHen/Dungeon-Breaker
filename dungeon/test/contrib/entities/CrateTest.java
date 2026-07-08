@@ -2,11 +2,11 @@ package contrib.entities;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import contrib.components.CollideComponent;
 import core.Entity;
 import core.components.DrawComponent;
 import core.components.PositionComponent;
 import core.components.VelocityComponent;
-import contrib.components.CollideComponent;
 import core.utils.Point;
 import core.utils.components.path.SimpleIPath;
 import org.junit.jupiter.api.Test;
@@ -47,9 +47,11 @@ public class CrateTest {
    */
   @Test
   public void test_G2_crate_mass_zero() {
-    assertThrows(IllegalArgumentException.class, () -> {
-      MiscFactory.crate(new Point(0, 0), 0f, dummyTexture1);
-    });
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          MiscFactory.crate(new Point(0, 0), 0f, dummyTexture1);
+        });
   }
 
   /*
@@ -123,7 +125,8 @@ public class CrateTest {
   @Test
   public void test_U3_invalid_texture_path() {
     try {
-      Entity crate = MiscFactory.crate(new Point(0, 0), 5f, new SimpleIPath("invalid/path/missing.png"));
+      Entity crate =
+          MiscFactory.crate(new Point(0, 0), 5f, new SimpleIPath("invalid/path/missing.png"));
       assertNotNull(crate);
     } catch (Throwable t) {
       assertTrue(true);
@@ -135,9 +138,11 @@ public class CrateTest {
    */
   @Test
   public void test_U4_negative_mass() {
-    assertThrows(IllegalArgumentException.class, () -> {
-      MiscFactory.crate(new Point(0, 0), -5.0f, dummyTexture1);
-    });
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          MiscFactory.crate(new Point(0, 0), -5.0f, dummyTexture1);
+        });
   }
 
   /*
