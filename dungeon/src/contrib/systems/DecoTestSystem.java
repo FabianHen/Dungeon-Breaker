@@ -199,7 +199,7 @@ public class DecoTestSystem extends System {
     return SkillTools.cursorPositionAsPoint();
   }
 
- public enum Mode {
+  public enum Mode {
     ChangeDeco,
     ModifyOffsetX,
     ModifyOffsetY,
