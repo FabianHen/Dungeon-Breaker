@@ -1,4 +1,4 @@
-package contrib.utils.DynamicCompiler_Folder;
+package contrib.utils.dynamicCompilerFolder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
