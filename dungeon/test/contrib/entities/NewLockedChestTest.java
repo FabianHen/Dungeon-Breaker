@@ -14,8 +14,8 @@ import java.util.HashSet;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests für die Methode MiscFactory.newLockedChest(Set<Item> items, Point position, Class<? extends Item> requiredKeyType)
- * Zugehörige Issue-Nummer: #138
+ * Tests für die Methode MiscFactory.newLockedChest(Set<Item> items, Point position, Class<? extends
+ * Item> requiredKeyType) Zugehörige Issue-Nummer: #138
  */
 public class NewLockedChestTest {
 
@@ -118,9 +118,11 @@ public class NewLockedChestTest {
    */
   @Test
   public void test_U1_requiredKeyType_null() {
-    assertThrows(IllegalArgumentException.class, () -> {
-      MiscFactory.newLockedChest(new HashSet<>(), new Point(0, 0), null);
-    });
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          MiscFactory.newLockedChest(new HashSet<>(), new Point(0, 0), null);
+        });
   }
 
   /*
@@ -128,9 +130,11 @@ public class NewLockedChestTest {
    */
   @Test
   public void test_U2_invalid_requiredKeyType() {
-    assertThrows(IllegalArgumentException.class, () -> {
-      MiscFactory.newLockedChest(new HashSet<>(), new Point(0, 0), ItemFairy.class);
-    });
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          MiscFactory.newLockedChest(new HashSet<>(), new Point(0, 0), ItemFairy.class);
+        });
   }
 
   /*
@@ -138,9 +142,11 @@ public class NewLockedChestTest {
    */
   @Test
   public void test_U3_items_null() {
-    assertThrows(NullPointerException.class, () -> {
-      MiscFactory.newLockedChest(null, new Point(0, 0), ItemKey.class);
-    });
+    assertThrows(
+        NullPointerException.class,
+        () -> {
+          MiscFactory.newLockedChest(null, new Point(0, 0), ItemKey.class);
+        });
   }
 
   /*
