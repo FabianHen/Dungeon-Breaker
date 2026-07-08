@@ -25,10 +25,10 @@ class DynamicCompilerCompileAndLoadTest {
     Files.writeString(
         source,
         """
-                package test;
-                public class Hello {
-                }
-                """);
+        package test;
+        public class Hello {
+        }
+        """);
 
     Class<?> clazz =
         DynamicCompiler.compileAndLoad(new SimpleIPath(source.toString()), "test.Hello");
@@ -45,10 +45,10 @@ class DynamicCompilerCompileAndLoadTest {
     Files.writeString(
         source,
         """
-                package test;
-                public class Hello {
-                }
-                """);
+        package test;
+        public class Hello {
+        }
+        """);
 
     Class<?> first =
         DynamicCompiler.compileAndLoad(new SimpleIPath(source.toString()), "test.Hello");
@@ -67,11 +67,11 @@ class DynamicCompilerCompileAndLoadTest {
     Files.writeString(
         source,
         """
-                package test;
-                public class Broken {
-                    this is not java
-                }
-                """);
+        package test;
+        public class Broken {
+            this is not java
+        }
+        """);
 
     assertThrows(
         Exception.class,

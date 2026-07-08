@@ -26,21 +26,21 @@ class DynamicCompilerLoadUserInstanceTest {
     Files.writeString(
         source,
         """
-                package test;
+        package test;
 
-                public class Person {
+        public class Person {
 
-                    private final String name;
+            private final String name;
 
-                    public Person(String name) {
-                        this.name = name;
-                    }
+            public Person(String name) {
+                this.name = name;
+            }
 
-                    public String getName() {
-                        return name;
-                    }
-                }
-                """);
+            public String getName() {
+                return name;
+            }
+        }
+        """);
 
     Object object =
         DynamicCompiler.loadUserInstance(
@@ -68,15 +68,14 @@ class DynamicCompilerLoadUserInstanceTest {
     Files.writeString(
         source,
         """
-                package test;
+        package test;
 
-                public class Person {
+        public class Person {
 
-                    public Person(String name) {
-
-                    }
-                }
-                """);
+            public Person(String name) {
+            }
+        }
+        """);
 
     assertThrows(
         NoSuchMethodException.class,

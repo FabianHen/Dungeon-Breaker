@@ -27,21 +27,21 @@ class DynamicCompilerComponentTest {
     Files.writeString(
         source,
         """
-                package test;
+        package test;
 
-                public class Greeter {
+        public class Greeter {
 
-                    private final String name;
+            private final String name;
 
-                    public Greeter(String name){
-                        this.name = name;
-                    }
+            public Greeter(String name){
+                this.name = name;
+            }
 
-                    public String greet(){
-                        return "Hello " + name;
-                    }
-                }
-                """);
+            public String greet(){
+                return "Hello " + name;
+            }
+        }
+        """);
 
     Object greeter =
         DynamicCompiler.loadUserInstance(
