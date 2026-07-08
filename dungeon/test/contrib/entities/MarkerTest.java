@@ -8,10 +8,7 @@ import core.components.PositionComponent;
 import core.utils.Point;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests für die Methode MiscFactory.marker(Point position)
- * Zugehörige Issue-Nummer: #140
- */
+/** Tests für die Methode MiscFactory.marker(Point position) Zugehörige Issue-Nummer: #140 */
 public class MarkerTest {
 
   /*
