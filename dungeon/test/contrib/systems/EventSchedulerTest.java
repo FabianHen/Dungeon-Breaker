@@ -3,6 +3,7 @@ package contrib.systems;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
+/** Tests for {@link EventScheduler}. */
 public class EventSchedulerTest {
 
   @BeforeEach

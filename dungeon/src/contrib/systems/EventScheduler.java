@@ -153,8 +153,8 @@ public class EventScheduler extends System {
   /**
    * Returns the current time used by the scheduler.
    *
-   * <p>During normal execution, the real time is used. During tests, a fixed test time can
-   * be set to make scheduled actions deterministic and independent of real time.
+   * <p>During normal execution, the real time is used. During tests, a fixed test time can be set
+   * to make scheduled actions deterministic and independent of real time.
    *
    * @return the current time in milliseconds
    */
@@ -165,14 +165,12 @@ public class EventScheduler extends System {
     return millisForTesting;
   }
 
-
   /*
    * Test support methods.
    *
    * These methods allow tests in the same package to control scheduler time without exposing this
    * functionality as part of the public API.
    */
-
 
   static void setMillisForTesting(long millis) {
     millisForTesting = millis;
