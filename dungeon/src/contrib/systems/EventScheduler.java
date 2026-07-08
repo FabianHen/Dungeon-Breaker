@@ -3,6 +3,9 @@ package contrib.systems;
 import com.badlogic.gdx.utils.TimeUtils;
 import contrib.utils.IAction;
 import core.System;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
 import java.util.PriorityQueue;
 
 /**
@@ -146,5 +149,16 @@ public class EventScheduler extends System {
   public void stop() {
     if (pausable) run = false;
     else run = true;
+  }
+
+
+  @BeforeEach
+  void setUp() {
+    EventScheduler.clear();
+  }
+
+  @AfterEach
+  void tearDown() {
+    EventScheduler.clear();
   }
 }
