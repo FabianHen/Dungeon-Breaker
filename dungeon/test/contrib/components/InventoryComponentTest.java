@@ -2,6 +2,7 @@ package contrib.components;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.doAnswer;
@@ -385,8 +386,76 @@ public class InventoryComponentTest {
     assertFalse(ic.removeOne(notInInventory));
   }
 
+  /**
+   *  Testing the correct Content of intems(class) if Elements of the class exist
+   */
+  @Test
+  public void itemsClass_instanceExists() {
+    InventoryComponent ic = new InventoryComponent(4);
+    DummyItem item1 = new DummyItem(2, 5);
+    DummyItem item2 = new DummyItem(3, 5);
+    DummyItem item3 = new DummyItem(3, 5);
+    DummyItem2 item4 = new DummyItem2(4, 5);
+    ic.add(item1);
+    Set<Item> result = ic.items(DummyItem.class);
+    assertEquals(1, result.size());
+    assertTrue(result.contains(item1));
+
+    ic.add(item2);
+    result = ic.items(DummyItem.class);
+    assertEquals(1, result.size());
+    Item item = result.iterator().next();
+    assertEquals(5, item.stackSize());
+
+    ic.add(item3);
+    result = ic.items(DummyItem.class);
+    assertEquals(2, result.size());
+    assertTrue(result.contains(item1));
+    assertTrue(result.contains(item3));
+
+    ic.add(item4);
+    result = ic.items(DummyItem.class);
+    assertEquals(2, result.size());
+    assertTrue(result.contains(item1));
+    assertTrue(result.contains(item3));
+  }
+
+  /**
+   * Testing the correct Content of intems(class) if no Elements of the class exist
+   */
+  @Test
+  public void itemsClass_instanceNotExists() {
+    InventoryComponent ic = new InventoryComponent(4);
+    DummyItem item1 = new DummyItem(2, 5);
+    DummyItem item2 = new DummyItem(3, 5);
+    ic.add(item1);
+    ic.add(item2);
+    Set<Item> result = ic.items(DummyItem2.class);
+    assertEquals(0, result.size());
+  }
+
+  /**
+   * items(Class) - if Class is null, throw NullPointerException
+   */
+  @Test
+  public void itemsClass_classIsNull_NullpointerException() {
+    InventoryComponent ic = new InventoryComponent(4);
+    DummyItem item1 = new DummyItem(2, 5);
+    DummyItem item2 = new DummyItem(3, 5);
+    ic.add(item1);
+    ic.add(item2);
+    assertThrows(NullPointerException.class, () -> ic.items(null));
+  }
+
+
   private class DummyItem extends Item {
     public DummyItem(int stackSize, int maxStackSize) {
+      super(null, null, null, null, stackSize, maxStackSize);
+    }
+  }
+
+  private class DummyItem2 extends Item {
+    public DummyItem2(int stackSize, int maxStackSize) {
       super(null, null, null, null, stackSize, maxStackSize);
     }
   }
