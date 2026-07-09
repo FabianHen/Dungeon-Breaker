@@ -1,7 +1,11 @@
 package contrib.entities;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import contrib.components.InventoryComponent;
 import contrib.modules.interaction.InteractionComponent;
@@ -14,13 +18,13 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests für die Methode MiscFactory.newChest(Set<Item> item, Point position)
+ * Tests für die Methode MiscFactory.newChest(Set(Item) item, Point position)
  * Zugehörige Issue-Nummer: #137
  */
 public class NewChest2Test {
 
-  /*
-   * Äquivalenzklasse: G1. Leere Truhe mit gültiger Position erstellen
+  /**
+   * Äquivalenzklasse: G1. Leere Truhe mit gültiger Position erstellen.
    */
   @Test
   public void test_G1_newChest_empty_with_position() {
@@ -37,8 +41,8 @@ public class NewChest2Test {
     assertEquals(0, chest.fetch(InventoryComponent.class).get().count());
   }
 
-  /*
-   * Äquivalenzklasse: G2. Truhe mit mehreren Items erstellen
+  /**
+   * Äquivalenzklasse: G2. Truhe mit mehreren Items erstellen.
    */
   @Test
   public void test_G2_newChest_with_items() {
@@ -59,8 +63,8 @@ public class NewChest2Test {
     assertEquals(2, ic.count());
   }
 
-  /*
-   * Äquivalenzklasse: G3. Position ist null
+  /**
+   * Äquivalenzklasse: G3. Position ist null.
    */
   @Test
   public void test_G3_position_is_null() {
@@ -71,8 +75,8 @@ public class NewChest2Test {
     assertNotNull(chest.fetch(PositionComponent.class).get().position());
   }
 
-  /*
-   * Äquivalenzklasse: G4. Interaktion mit Entity, das ein InventoryComponent besitzt
+  /**
+   * Äquivalenzklasse: G4. Interaktion mit Entity, das ein InventoryComponent besitzt.
    */
   @Test
   public void test_G4_interaction_with_inventory() {
@@ -88,8 +92,8 @@ public class NewChest2Test {
     });
   }
 
-  /*
-   * Äquivalenzklasse: G5. Truhe enthält mehr Items als Inventarslots aufnehmen können
+  /**
+   * Äquivalenzklasse: G5. Truhe enthält mehr Items als Inventarslots aufnehmen können.
    */
   @Test
   public void test_G5_more_items_than_slots() {
@@ -103,8 +107,8 @@ public class NewChest2Test {
     assertNotNull(chest);
   }
 
-  /*
-   * Äquivalenzklasse: U1. Item-Menge ist null
+  /**
+   * Äquivalenzklasse: U1. Item-Menge ist null.
    */
   @Test
   public void test_U1_items_null() {
@@ -113,8 +117,8 @@ public class NewChest2Test {
     });
   }
 
-  /*
-   * Äquivalenzklasse: U2. Animation "closed" fehlt
+  /**
+   * Äquivalenzklasse: U2. Animation "closed" fehlt.
    */
   @Test
   public void test_U2_animation_closed_missing() {
@@ -125,8 +129,8 @@ public class NewChest2Test {
     }
   }
 
-  /*
-   * Äquivalenzklasse: U3. Animation "opening" fehlt
+  /**
+   * Äquivalenzklasse: U3. Animation "opening" fehlt.
    */
   @Test
   public void test_U3_animation_opening_missing() {
@@ -137,8 +141,8 @@ public class NewChest2Test {
     }
   }
 
-  /*
-   * Äquivalenzklasse: U4. Animation "open" fehlt
+  /**
+   * Äquivalenzklasse: U4. Animation "open" fehlt.
    */
   @Test
   public void test_U4_animation_open_missing() {
@@ -149,8 +153,8 @@ public class NewChest2Test {
     }
   }
 
-  /*
-   * Äquivalenzklasse: U5. Spritesheet kann nicht geladen werden
+  /**
+   * Äquivalenzklasse: U5. Spritesheet kann nicht geladen werden.
    */
   @Test
   public void test_U5_spritesheet_not_found() {
@@ -161,8 +165,8 @@ public class NewChest2Test {
     }
   }
 
-  /*
-   * Äquivalenzklasse: U6. Interagierendes Entity besitzt kein InventoryComponent
+  /**
+   * Äquivalenzklasse: U6. Interagierendes Entity besitzt kein InventoryComponent.
    */
   @Test
   public void test_U6_interactor_missing_inventory() {
@@ -177,8 +181,8 @@ public class NewChest2Test {
     });
   }
 
-  /*
-   * Äquivalenzklasse: U7. InventoryComponent des Interagierenden ist inkonsistent
+  /**
+   * Äquivalenzklasse: U7. InventoryComponent des Interagierenden ist inkonsistent.
    */
   @Test
   public void test_U7_interactor_inventory_inconsistent() {
@@ -186,8 +190,8 @@ public class NewChest2Test {
     assertNotNull(chest);
   }
 
-  /*
-   * Äquivalenzklasse: U8. Hinzufügen der UIComponent schlägt fehl
+  /**
+   * Äquivalenzklasse: U8. Hinzufügen der UIComponent schlägt fehl.
    */
   @Test
   public void test_U8_adding_ui_component_fails() {
