@@ -18,14 +18,12 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests für die Methode MiscFactory.newChest(Set(Item) item, Point position)
- * Zugehörige Issue-Nummer: #137
+ * Tests für die Methode MiscFactory.newChest(Set(Item) item, Point position) Zugehörige
+ * Issue-Nummer: #137
  */
 public class NewChest2Test {
 
-  /**
-   * Äquivalenzklasse: G1. Leere Truhe mit gültiger Position erstellen.
-   */
+  /** Äquivalenzklasse: G1. Leere Truhe mit gültiger Position erstellen. */
   @Test
   public void test_G1_newChest_empty_with_position() {
     Point position = new Point(1, 2);
@@ -41,9 +39,7 @@ public class NewChest2Test {
     assertEquals(0, chest.fetch(InventoryComponent.class).get().count());
   }
 
-  /**
-   * Äquivalenzklasse: G2. Truhe mit mehreren Items erstellen.
-   */
+  /** Äquivalenzklasse: G2. Truhe mit mehreren Items erstellen. */
   @Test
   public void test_G2_newChest_with_items() {
     Point position = new Point(1, 2);
@@ -63,9 +59,7 @@ public class NewChest2Test {
     assertEquals(2, ic.count());
   }
 
-  /**
-   * Äquivalenzklasse: G3. Position ist null.
-   */
+  /** Äquivalenzklasse: G3. Position ist null. */
   @Test
   public void test_G3_position_is_null() {
     Entity chest = MiscFactory.newChest(new HashSet<>(), null);
@@ -75,26 +69,24 @@ public class NewChest2Test {
     assertNotNull(chest.fetch(PositionComponent.class).get().position());
   }
 
-  /**
-   * Äquivalenzklasse: G4. Interaktion mit Entity, das ein InventoryComponent besitzt.
-   */
+  /** Äquivalenzklasse: G4. Interaktion mit Entity, das ein InventoryComponent besitzt. */
   @Test
   public void test_G4_interaction_with_inventory() {
     Entity chest = MiscFactory.newChest(new HashSet<>(), new Point(0, 0));
     Entity interactor = new Entity();
-    interactor.add(new PositionComponent(new Point(0, 0))); // Position für Entfernungsberechnung benötigt
+    interactor.add(
+        new PositionComponent(new Point(0, 0))); // Position für Entfernungsberechnung benötigt
     interactor.add(new InventoryComponent(6));
 
     InteractionComponent ic = chest.fetch(InteractionComponent.class).get();
 
-    assertDoesNotThrow(() -> {
-      ic.triggerInteraction(chest, interactor);
-    });
+    assertDoesNotThrow(
+        () -> {
+          ic.triggerInteraction(chest, interactor);
+        });
   }
 
-  /**
-   * Äquivalenzklasse: G5. Truhe enthält mehr Items als Inventarslots aufnehmen können.
-   */
+  /** Äquivalenzklasse: G5. Truhe enthält mehr Items als Inventarslots aufnehmen können. */
   @Test
   public void test_G5_more_items_than_slots() {
     Point position = new Point(0, 0);
@@ -107,19 +99,17 @@ public class NewChest2Test {
     assertNotNull(chest);
   }
 
-  /**
-   * Äquivalenzklasse: U1. Item-Menge ist null.
-   */
+  /** Äquivalenzklasse: U1. Item-Menge ist null. */
   @Test
   public void test_U1_items_null() {
-    assertThrows(NullPointerException.class, () -> {
-      MiscFactory.newChest(null, new Point(0, 0));
-    });
+    assertThrows(
+        NullPointerException.class,
+        () -> {
+          MiscFactory.newChest(null, new Point(0, 0));
+        });
   }
 
-  /**
-   * Äquivalenzklasse: U2. Animation "closed" fehlt.
-   */
+  /** Äquivalenzklasse: U2. Animation "closed" fehlt. */
   @Test
   public void test_U2_animation_closed_missing() {
     try {
@@ -129,9 +119,7 @@ public class NewChest2Test {
     }
   }
 
-  /**
-   * Äquivalenzklasse: U3. Animation "opening" fehlt.
-   */
+  /** Äquivalenzklasse: U3. Animation "opening" fehlt. */
   @Test
   public void test_U3_animation_opening_missing() {
     try {
@@ -141,9 +129,7 @@ public class NewChest2Test {
     }
   }
 
-  /**
-   * Äquivalenzklasse: U4. Animation "open" fehlt.
-   */
+  /** Äquivalenzklasse: U4. Animation "open" fehlt. */
   @Test
   public void test_U4_animation_open_missing() {
     try {
@@ -153,9 +139,7 @@ public class NewChest2Test {
     }
   }
 
-  /**
-   * Äquivalenzklasse: U5. Spritesheet kann nicht geladen werden.
-   */
+  /** Äquivalenzklasse: U5. Spritesheet kann nicht geladen werden. */
   @Test
   public void test_U5_spritesheet_not_found() {
     try {
@@ -165,34 +149,30 @@ public class NewChest2Test {
     }
   }
 
-  /**
-   * Äquivalenzklasse: U6. Interagierendes Entity besitzt kein InventoryComponent.
-   */
+  /** Äquivalenzklasse: U6. Interagierendes Entity besitzt kein InventoryComponent. */
   @Test
   public void test_U6_interactor_missing_inventory() {
     Entity chest = MiscFactory.newChest(new HashSet<>(), new Point(0, 0));
     Entity interactor = new Entity();
-    interactor.add(new PositionComponent(new Point(0, 0))); // Position für Entfernungsberechnung benötigt
+    interactor.add(
+        new PositionComponent(new Point(0, 0))); // Position für Entfernungsberechnung benötigt
 
     InteractionComponent ic = chest.fetch(InteractionComponent.class).get();
 
-    assertDoesNotThrow(() -> {
-      ic.triggerInteraction(chest, interactor);
-    });
+    assertDoesNotThrow(
+        () -> {
+          ic.triggerInteraction(chest, interactor);
+        });
   }
 
-  /**
-   * Äquivalenzklasse: U7. InventoryComponent des Interagierenden ist inkonsistent.
-   */
+  /** Äquivalenzklasse: U7. InventoryComponent des Interagierenden ist inkonsistent. */
   @Test
   public void test_U7_interactor_inventory_inconsistent() {
     Entity chest = MiscFactory.newChest(new HashSet<>(), new Point(0, 0));
     assertNotNull(chest);
   }
 
-  /**
-   * Äquivalenzklasse: U8. Hinzufügen der UIComponent schlägt fehl.
-   */
+  /** Äquivalenzklasse: U8. Hinzufügen der UIComponent schlägt fehl. */
   @Test
   public void test_U8_adding_ui_component_fails() {
     try {
