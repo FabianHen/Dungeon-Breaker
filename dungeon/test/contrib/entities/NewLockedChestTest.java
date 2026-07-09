@@ -17,12 +17,14 @@ import java.util.HashSet;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests für die Methode MiscFactory.newLockedChest(Set(Item) items, Point position, Class(? extends
- * Item) requiredKeyType) Zugehörige Issue-Nummer: #138
+ * Tests für die Methode MiscFactory.newLockedChest(Set(Item) items, Point position, Class(? extends Item) requiredKeyType)
+ * Zugehörige Issue-Nummer: #138
  */
 public class NewLockedChestTest {
 
-  /** Äquivalenzklasse: G1. Verschlossene Truhe mit ItemKey erstellen. */
+  /**
+   * Äquivalenzklasse: G1. Verschlossene Truhe mit ItemKey erstellen.
+   */
   @Test
   public void test_G1_newLockedChest_with_ItemKey() {
     Entity chest = MiscFactory.newLockedChest(new HashSet<>(), new Point(0, 0), ItemKey.class);
@@ -30,7 +32,9 @@ public class NewLockedChestTest {
     assertTrue(chest.isPresent(InteractionComponent.class));
   }
 
-  /** Äquivalenzklasse: G2. Verschlossene Truhe mit ItemBigKey erstellen. */
+  /**
+   * Äquivalenzklasse: G2. Verschlossene Truhe mit ItemBigKey erstellen.
+   */
   @Test
   public void test_G2_newLockedChest_with_ItemBigKey() {
     Entity chest = MiscFactory.newLockedChest(new HashSet<>(), new Point(0, 0), ItemBigKey.class);
@@ -38,7 +42,9 @@ public class NewLockedChestTest {
     assertTrue(chest.isPresent(InteractionComponent.class));
   }
 
-  /** Äquivalenzklasse: G3. Interaktion ohne InventoryComponent. */
+  /**
+   * Äquivalenzklasse: G3. Interaktion ohne InventoryComponent.
+   */
   @Test
   public void test_G3_interaction_without_inventory() {
     Entity chest = MiscFactory.newLockedChest(new HashSet<>(), new Point(0, 0), ItemKey.class);
@@ -49,7 +55,9 @@ public class NewLockedChestTest {
     assertDoesNotThrow(() -> ic.triggerInteraction(chest, interactor));
   }
 
-  /** Äquivalenzklasse: G4. Interaktion ohne passenden Schlüssel. */
+  /**
+   * Äquivalenzklasse: G4. Interaktion ohne passenden Schlüssel.
+   */
   @Test
   public void test_G4_interaction_without_matching_key() {
     Entity chest = MiscFactory.newLockedChest(new HashSet<>(), new Point(0, 0), ItemKey.class);
@@ -66,7 +74,9 @@ public class NewLockedChestTest {
     assertTrue(chest.isPresent(InteractionComponent.class));
   }
 
-  /** Äquivalenzklasse: G5. Interaktion mit passendem Schlüssel und Auswahl "Nein". */
+  /**
+   * Äquivalenzklasse: G5. Interaktion mit passendem Schlüssel und Auswahl "Nein".
+   */
   @Test
   public void test_G5_interaction_with_key_and_select_no() {
     Entity chest = MiscFactory.newLockedChest(new HashSet<>(), new Point(0, 0), ItemKey.class);
@@ -79,79 +89,93 @@ public class NewLockedChestTest {
     assertNotNull(chest);
   }
 
-  /** Äquivalenzklasse: G6. Interaktion mit passendem Schlüssel und Auswahl "Ja". */
+  /**
+   * Äquivalenzklasse: G6. Interaktion mit passendem Schlüssel und Auswahl "Ja".
+   */
   @Test
   public void test_G6_interaction_with_key_and_select_yes() {
     Entity chest = MiscFactory.newLockedChest(new HashSet<>(), new Point(0, 0), ItemKey.class);
     assertNotNull(chest);
   }
 
-  /** Äquivalenzklasse: G7. Truhe nach erfolgreichem Entsperren erneut öffnen. */
+  /**
+   * Äquivalenzklasse: G7. Truhe nach erfolgreichem Entsperren erneut öffnen.
+   */
   @Test
   public void test_G7_reopen_chest_after_unlock() {
     Entity chest = MiscFactory.newLockedChest(new HashSet<>(), new Point(0, 0), ItemKey.class);
     assertNotNull(chest);
   }
 
-  /** Äquivalenzklasse: G8. Inventar enthält mehrere passende Schlüssel. */
+  /**
+   * Äquivalenzklasse: G8. Inventar enthält mehrere passende Schlüssel.
+   */
   @Test
   public void test_G8_inventory_contains_multiple_keys() {
     Entity chest = MiscFactory.newLockedChest(new HashSet<>(), new Point(0, 0), ItemKey.class);
     assertNotNull(chest);
   }
 
-  /** Äquivalenzklasse: U1. requiredKeyType ist null. */
+  /**
+   * Äquivalenzklasse: U1. requiredKeyType ist null.
+   */
   @Test
   public void test_U1_requiredKeyType_null() {
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> {
-          MiscFactory.newLockedChest(new HashSet<>(), new Point(0, 0), null);
-        });
+    assertThrows(IllegalArgumentException.class, () -> {
+      MiscFactory.newLockedChest(new HashSet<>(), new Point(0, 0), null);
+    });
   }
 
-  /** Äquivalenzklasse: U2. Nicht erlaubter Schlüsseltyp. */
+  /**
+   * Äquivalenzklasse: U2. Nicht erlaubter Schlüsseltyp.
+   */
   @Test
   public void test_U2_invalid_requiredKeyType() {
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> {
-          MiscFactory.newLockedChest(new HashSet<>(), new Point(0, 0), ItemFairy.class);
-        });
+    assertThrows(IllegalArgumentException.class, () -> {
+      MiscFactory.newLockedChest(new HashSet<>(), new Point(0, 0), ItemFairy.class);
+    });
   }
 
-  /** Äquivalenzklasse: U3. Item-Menge ist null. */
+  /**
+   * Äquivalenzklasse: U3. Item-Menge ist null.
+   */
   @Test
   public void test_U3_items_null() {
-    assertThrows(
-        NullPointerException.class,
-        () -> {
-          MiscFactory.newLockedChest(null, new Point(0, 0), ItemKey.class);
-        });
+    assertThrows(NullPointerException.class, () -> {
+      MiscFactory.newLockedChest(null, new Point(0, 0), ItemKey.class);
+    });
   }
 
-  /** Äquivalenzklasse: U4. newChest(...) liefert Entity ohne InteractionComponent. */
+  /**
+   * Äquivalenzklasse: U4. newChest(...) liefert Entity ohne InteractionComponent.
+   */
   @Test
   public void test_U4_newChest_missing_interaction_component() {
     Entity chest = new Entity();
     assertNotNull(chest);
   }
 
-  /** Äquivalenzklasse: U5. DialogFactory.show(...) liefert keine gültige UIComponent. */
+  /**
+   * Äquivalenzklasse: U5. DialogFactory.show(...) liefert keine gültige UIComponent.
+   */
   @Test
   public void test_U5_dialog_factory_returns_invalid_ui() {
     Entity chest = MiscFactory.newLockedChest(new HashSet<>(), new Point(0, 0), ItemKey.class);
     assertNotNull(chest);
   }
 
-  /** Äquivalenzklasse: U6. Schlüssel wird zwischen Dialogöffnung und Bestätigung entfernt. */
+  /**
+   * Äquivalenzklasse: U6. Schlüssel wird zwischen Dialogöffnung und Bestätigung entfernt.
+   */
   @Test
   public void test_U6_key_removed_before_confirmation() {
     Entity chest = MiscFactory.newLockedChest(new HashSet<>(), new Point(0, 0), ItemKey.class);
     assertNotNull(chest);
   }
 
-  /** Äquivalenzklasse: U7. Entfernen oder Hinzufügen der InteractionComponent schlägt fehl. */
+  /**
+   * Äquivalenzklasse: U7. Entfernen oder Hinzufügen der InteractionComponent schlägt fehl.
+   */
   @Test
   public void test_U7_component_manipulation_fails() {
     Entity chest = MiscFactory.newLockedChest(new HashSet<>(), new Point(0, 0), ItemKey.class);
