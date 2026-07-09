@@ -2,6 +2,7 @@ package contrib.components;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.doAnswer;
@@ -385,8 +386,53 @@ public class InventoryComponentTest {
     assertFalse(ic.removeOne(notInInventory));
   }
 
+  /**
+   * Testing multiple stacks of the same Item
+   */
+  @Test
+  public void countWithClass_multipleStacksOfTheSameClass() {
+    InventoryComponent ic = new InventoryComponent(4);
+    DummyItem stack1 = new DummyItem(4, 5);
+    DummyItem stack2 = new DummyItem(3, 5);
+    DummyItem2 stack3 = new DummyItem2(6,6);
+    ic.add(stack1);
+    ic.add(stack2);
+    ic.add(stack3);
+    assertEquals(7, ic.count(DummyItem.class));
+    assertEquals(6, ic.count(DummyItem2.class));
+  }
+
+  /**
+   * Testing no stack with that class
+   */
+  @Test
+  public void countWithClass_NoneItemsOfThatClass() {
+    InventoryComponent ic = new InventoryComponent(4);
+    DummyItem stack1 = new DummyItem(4, 5);
+    DummyItem stack2 = new DummyItem(3, 5);
+    ic.add(stack1);
+    ic.add(stack2);
+    assertEquals(0, ic.count(DummyItem2.class));
+  }
+
+  /**
+   * Testing for NullPointerException if class = null
+   */
+  @Test
+  public void countWithClass_classIsNull_NullPointerException() {
+    InventoryComponent ic = new InventoryComponent(2);
+    assertThrows(NullPointerException.class, () -> ic.count(null));
+  }
+
+
   private class DummyItem extends Item {
     public DummyItem(int stackSize, int maxStackSize) {
+      super(null, null, null, null, stackSize, maxStackSize);
+    }
+  }
+
+  private class DummyItem2 extends Item {
+    public DummyItem2(int stackSize, int maxStackSize) {
       super(null, null, null, null, stackSize, maxStackSize);
     }
   }

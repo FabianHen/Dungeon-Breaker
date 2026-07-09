@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import contrib.components.CollideComponent;
+import contrib.components.LeverComponent;
+import contrib.components.PressurePlateComponent;
 import core.Entity;
 import core.Game;
 import core.components.PositionComponent;
@@ -17,7 +19,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import testingUtils.SimpleCounter;
 
-/** WTF? . */
+/**
+ * Unit tests for the {@link CollisionSystem}.
+ */
 public class CollisionSystemTest {
 
   private static final String DIRECTION_MESSAGE = "The Direction of the Collision should be.";
@@ -62,7 +66,7 @@ public class CollisionSystemTest {
     return e1;
   }
 
-  /** WTF? . */
+  /** Public call to clean the Environment after Test. */
   @AfterEach
   public void cleanup() {
     cleanUpEnvironment();
