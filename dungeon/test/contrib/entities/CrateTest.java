@@ -11,10 +11,15 @@ import core.components.PositionComponent;
 import core.utils.Point;
 import org.junit.jupiter.api.Test;
 
-/** Tests für die Methode MiscFactory.crate(Point position) Zugehörige Issue-Nummer: #141 */
+/**
+ * Tests für die Methode MiscFactory.crate(Point position)
+ * Zugehörige Issue-Nummer: #141
+ */
 public class CrateTest {
 
-  /** Äquivalenzklasse: G1. Kiste mit gültiger Position erstellen. */
+  /**
+   * Äquivalenzklasse: G1. Kiste mit gültiger Position erstellen.
+   */
   @Test
   public void test_G1_crate_valid_position() {
     Point position = new Point(3.5f, -2.1f);
@@ -27,7 +32,9 @@ public class CrateTest {
     assertEquals(position, crate.fetch(PositionComponent.class).get().position());
   }
 
-  /** Äquivalenzklasse: G2. Mehrere Kisten an unterschiedlichen Positionen erstellen. */
+  /**
+   * Äquivalenzklasse: G2. Mehrere Kisten an unterschiedlichen Positionen erstellen.
+   */
   @Test
   public void test_G2_multiple_crates_different_positions() {
     Point pos1 = new Point(1f, 1f);
@@ -43,7 +50,9 @@ public class CrateTest {
     assertEquals(pos2, crate2.fetch(PositionComponent.class).get().position());
   }
 
-  /** Äquivalenzklasse: G3. Mehrere Kisten an derselben Position erstellen. */
+  /**
+   * Äquivalenzklasse: G3. Mehrere Kisten an derselben Position erstellen.
+   */
   @Test
   public void test_G3_multiple_crates_same_position() {
     Point position = new Point(5f, 5f);
@@ -58,7 +67,9 @@ public class CrateTest {
     assertEquals(position, crate2.fetch(PositionComponent.class).get().position());
   }
 
-  /** Äquivalenzklasse: U1. Position ist null. */
+  /**
+   * Äquivalenzklasse: U1. Position ist null.
+   */
   @Test
   public void test_U1_position_null() {
     try {
@@ -68,7 +79,9 @@ public class CrateTest {
     }
   }
 
-  /** Äquivalenzklasse: U2. Kisten-Textur kann nicht geladen werden. */
+  /**
+   * Äquivalenzklasse: U2. Kisten-Textur kann nicht geladen werden.
+   */
   @Test
   public void test_U2_texture_load_fails() {
     try {
@@ -79,7 +92,9 @@ public class CrateTest {
     }
   }
 
-  /** Äquivalenzklasse: U3. Animation-Erstellung schlägt fehl. */
+  /**
+   * Äquivalenzklasse: U3. Animation-Erstellung schlägt fehl.
+   */
   @Test
   public void test_U3_animation_creation_fails() {
     try {
@@ -90,7 +105,9 @@ public class CrateTest {
     }
   }
 
-  /** Äquivalenzklasse: U4. PositionComponent akzeptiert die übergebene Position nicht. */
+  /**
+   * Äquivalenzklasse: U4. PositionComponent akzeptiert die übergebene Position nicht.
+   */
   @Test
   public void test_U4_position_not_accepted() {
     try {
@@ -101,7 +118,9 @@ public class CrateTest {
     }
   }
 
-  /** Äquivalenzklasse: U5. Name-Zuweisung schlägt fehl. */
+  /**
+   * Äquivalenzklasse: U5. Name-Zuweisung schlägt fehl.
+   */
   @Test
   public void test_U5_name_assignment_fails() {
     try {
@@ -112,7 +131,9 @@ public class CrateTest {
     }
   }
 
-  /** Äquivalenzklasse: U6. DrawComponent fehlt nach der Initialisierung. */
+  /**
+   * Äquivalenzklasse: U6. DrawComponent fehlt nach der Initialisierung.
+   */
   @Test
   public void test_U6_draw_component_missing() {
     try {
@@ -123,7 +144,9 @@ public class CrateTest {
     }
   }
 
-  /** Äquivalenzklasse: U7. Instanziierung wirft eine unerwartete RuntimeException. */
+  /**
+   * Äquivalenzklasse: U7. Instanziierung wirft eine unerwartete RuntimeException.
+   */
   @Test
   public void test_U7_unexpected_runtime_exception() {
     try {
