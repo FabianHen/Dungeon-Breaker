@@ -1,6 +1,9 @@
 package contrib.entities;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import core.Entity;
 import core.components.DrawComponent;
@@ -8,15 +11,10 @@ import core.components.PositionComponent;
 import core.utils.Point;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests für die Methode MiscFactory.marker(Point position)
- * Zugehörige Issue-Nummer: #140
- */
+/** Tests für die Methode MiscFactory.marker(Point position) Zugehörige Issue-Nummer: #140 */
 public class MarkerTest {
 
-  /*
-   * Äquivalenzklasse: G1. Marker mit gültiger Position erstellen
-   */
+  /** Äquivalenzklasse: G1. Marker mit gültiger Position erstellen. */
   @Test
   public void test_G1_marker_valid_position() {
     Point position = new Point(3.5f, -2.1f);
@@ -29,9 +27,7 @@ public class MarkerTest {
     assertEquals(position, marker.fetch(PositionComponent.class).get().position());
   }
 
-  /*
-   * Äquivalenzklasse: G2. Mehrere Marker an unterschiedlichen Positionen erstellen
-   */
+  /** Äquivalenzklasse: G2. Mehrere Marker an unterschiedlichen Positionen erstellen. */
   @Test
   public void test_G2_multiple_markers_different_positions() {
     Point pos1 = new Point(1f, 1f);
@@ -47,9 +43,7 @@ public class MarkerTest {
     assertEquals(pos2, marker2.fetch(PositionComponent.class).get().position());
   }
 
-  /*
-   * Äquivalenzklasse: G3. Mehrere Marker an derselben Position erstellen
-   */
+  /** Äquivalenzklasse: G3. Mehrere Marker an derselben Position erstellen. */
   @Test
   public void test_G3_multiple_markers_same_position() {
     Point position = new Point(5f, 5f);
@@ -64,9 +58,7 @@ public class MarkerTest {
     assertEquals(position, marker2.fetch(PositionComponent.class).get().position());
   }
 
-  /*
-   * Äquivalenzklasse: U1. Position ist null
-   */
+  /** Äquivalenzklasse: U1. Position ist null. */
   @Test
   public void test_U1_position_null() {
     try {
@@ -76,9 +68,7 @@ public class MarkerTest {
     }
   }
 
-  /*
-   * Äquivalenzklasse: U2. Marker-Textur kann nicht geladen werden
-   */
+  /** Äquivalenzklasse: U2. Marker-Textur kann nicht geladen werden. */
   @Test
   public void test_U2_texture_load_fails() {
     try {
@@ -89,9 +79,7 @@ public class MarkerTest {
     }
   }
 
-  /*
-   * Äquivalenzklasse: U3. Animation-Erstellung schlägt fehl
-   */
+  /** Äquivalenzklasse: U3. Animation-Erstellung schlägt fehl. */
   @Test
   public void test_U3_animation_creation_fails() {
     try {
@@ -102,9 +90,7 @@ public class MarkerTest {
     }
   }
 
-  /*
-   * Äquivalenzklasse: U4. PositionComponent akzeptiert die übergebene Position nicht
-   */
+  /** Äquivalenzklasse: U4. PositionComponent akzeptiert die übergebene Position nicht. */
   @Test
   public void test_U4_position_not_accepted() {
     try {
