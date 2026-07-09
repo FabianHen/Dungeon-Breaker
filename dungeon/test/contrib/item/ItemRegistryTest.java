@@ -14,12 +14,6 @@ import org.junit.jupiter.api.Test;
 /** Tests */
 public class ItemRegistryTest {
 
-  /** Remove the registered objects */
-  @AfterEach
-  void setup() {
-    ItemRegistry.clearMapsForTests();
-  }
-
   /** Tests that looking up an existing item id returns the registered class. */
   @Test
   void lookup_withExistingId_shouldReturnClass() {
