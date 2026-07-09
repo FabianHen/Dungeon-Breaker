@@ -14,8 +14,8 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests für die Methode MiscFactory.newChest(Set<Item> item, Point position)
- * Zugehörige Issue-Nummer: #137
+ * Tests für die Methode MiscFactory.newChest(Set<Item> item, Point position) Zugehörige
+ * Issue-Nummer: #137
  */
 public class NewChest2Test {
 
@@ -78,14 +78,16 @@ public class NewChest2Test {
   public void test_G4_interaction_with_inventory() {
     Entity chest = MiscFactory.newChest(new HashSet<>(), new Point(0, 0));
     Entity interactor = new Entity();
-    interactor.add(new PositionComponent(new Point(0, 0))); // Position für Entfernungsberechnung benötigt
+    interactor.add(
+        new PositionComponent(new Point(0, 0))); // Position für Entfernungsberechnung benötigt
     interactor.add(new InventoryComponent(6));
 
     InteractionComponent ic = chest.fetch(InteractionComponent.class).get();
 
-    assertDoesNotThrow(() -> {
-      ic.triggerInteraction(chest, interactor);
-    });
+    assertDoesNotThrow(
+        () -> {
+          ic.triggerInteraction(chest, interactor);
+        });
   }
 
   /*
@@ -108,9 +110,11 @@ public class NewChest2Test {
    */
   @Test
   public void test_U1_items_null() {
-    assertThrows(NullPointerException.class, () -> {
-      MiscFactory.newChest(null, new Point(0, 0));
-    });
+    assertThrows(
+        NullPointerException.class,
+        () -> {
+          MiscFactory.newChest(null, new Point(0, 0));
+        });
   }
 
   /*
@@ -168,13 +172,15 @@ public class NewChest2Test {
   public void test_U6_interactor_missing_inventory() {
     Entity chest = MiscFactory.newChest(new HashSet<>(), new Point(0, 0));
     Entity interactor = new Entity();
-    interactor.add(new PositionComponent(new Point(0, 0))); // Position für Entfernungsberechnung benötigt
+    interactor.add(
+        new PositionComponent(new Point(0, 0))); // Position für Entfernungsberechnung benötigt
 
     InteractionComponent ic = chest.fetch(InteractionComponent.class).get();
 
-    assertDoesNotThrow(() -> {
-      ic.triggerInteraction(chest, interactor);
-    });
+    assertDoesNotThrow(
+        () -> {
+          ic.triggerInteraction(chest, interactor);
+        });
   }
 
   /*
