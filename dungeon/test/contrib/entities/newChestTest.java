@@ -1,7 +1,13 @@
 package contrib.entities;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import contrib.components.InventoryComponent;
 import contrib.item.Item;
@@ -19,22 +25,31 @@ import org.junit.jupiter.api.Test;
  */
 public class newChestTest {
 
+  /** Der original konfigurierte ItemGenerator vor dem Testlauf. */
   private ItemGenerator originalGenerator;
+
+  /** Der gemockte ItemGenerator für kontrollierte Testbedingungen. */
   private ItemGenerator mockedGenerator;
 
+  /**
+   * Sichert den originalen Zustand und initialisiert die Mocks vor jedem Testlauf.
+   */
   @BeforeEach
   public void setUp() {
     originalGenerator = MiscFactory.randomItemGenerator();
     mockedGenerator = mock(ItemGenerator.class);
   }
 
+  /**
+   * Stellt den originalen Zustand des ItemGenerators nach jedem Testlauf wieder her.
+   */
   @AfterEach
   public void tearDown() {
     MiscFactory.randomItemGenerator(originalGenerator);
   }
 
-  /*
-   * Äquivalenzklasse: G1. Truhe mit zufälligem Inhalt erzeugen
+  /**
+   * Äquivalenzklasse: G1. Truhe mit zufälligem Inhalt erzeugen.
    */
   @Test
   public void test_G1_newChest_Random() {
@@ -55,8 +70,8 @@ public class newChestTest {
     assertTrue(itemAnzahl >= 0 && itemAnzahl <= 5);
   }
 
-  /*
-   * Äquivalenzklasse: G2. Leere Truhe erzeugen
+  /**
+   * Äquivalenzklasse: G2. Leere Truhe erzeugen.
    */
   @Test
   public void test_G2_newChest_Empty() {
@@ -73,8 +88,8 @@ public class newChestTest {
     assertEquals(0, ic.count());
   }
 
-  /*
-   * Äquivalenzklasse: G3. Mehrfache RANDOM-Erzeugung
+  /**
+   * Äquivalenzklasse: G3. Mehrfache RANDOM-Erzeugung.
    */
   @Test
   public void test_G3_multiple_Random_creations() {
@@ -87,8 +102,8 @@ public class newChestTest {
     }
   }
 
-  /*
-   * Äquivalenzklasse: G4. Mehrfache EMPTY-Erzeugung
+  /**
+   * Äquivalenzklasse: G4. Mehrfache EMPTY-Erzeugung.
    */
   @Test
   public void test_G4_multiple_Empty_creations() {
@@ -102,8 +117,8 @@ public class newChestTest {
     }
   }
 
-  /*
-   * Äquivalenzklasse: U1. Typ ist null
+  /**
+   * Äquivalenzklasse: U1. Typ ist null.
    */
   @Test
   public void test_U1_type_is_null() {
@@ -112,8 +127,8 @@ public class newChestTest {
     });
   }
 
-  /*
-   * Äquivalenzklasse: U2. generateRandomItems liefert weniger Items als erlaubt
+  /**
+   * Äquivalenzklasse: U2. generateRandomItems liefert weniger Items als erlaubt.
    */
   @Test
   public void test_U2_generateRandomItems_too_few_items() {
@@ -122,8 +137,8 @@ public class newChestTest {
     assertFalse(ic.count() < 0);
   }
 
-  /*
-   * Äquivalenzklasse: U3. generateRandomItems liefert mehr Items als erlaubt
+  /**
+   * Äquivalenzklasse: U3. generateRandomItems liefert mehr Items als erlaubt.
    */
   @Test
   public void test_U3_generateRandomItems_too_many_items() {
@@ -132,8 +147,8 @@ public class newChestTest {
     assertFalse(ic.count() > 5);
   }
 
-  /*
-   * Äquivalenzklasse: U4. generateRandomItems liefert null
+  /**
+   * Äquivalenzklasse: U4. generateRandomItems liefert null.
    */
   @Test
   public void test_U4_generateRandomItems_returns_null() {
@@ -147,8 +162,8 @@ public class newChestTest {
     }
   }
 
-  /*
-   * Äquivalenzklasse: U5. Überladene newChest(Set<Item>, Point)-Methode schlägt fehl
+  /**
+   * Äquivalenzklasse: U5. Überladene newChest(Set, Point)-Methode schlägt fehl.
    */
   @Test
   public void test_U5_overloaded_newChest_method_fails() {
