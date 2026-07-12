@@ -232,20 +232,17 @@ class EntityUtilsTest {
       // Collider spans [0, 2) x [0, 2): it does not contain the point.
       Entity outside = new Entity();
       outside.add(new PositionComponent(0f, 0f));
-      outside.add(
-          new CollideComponent(Vector2.of(0f, 0f), Vector2.of(2f, 2f)));
+      outside.add(new CollideComponent(Vector2.of(0f, 0f), Vector2.of(2f, 2f)));
 
       // Collider spans [0, 10) x [0, 10): its center is exactly the tested point.
       Entity nearest = new Entity();
       nearest.add(new PositionComponent(0f, 0f));
-      nearest.add(
-          new CollideComponent(Vector2.of(0f, 0f), Vector2.of(10f, 10f)));
+      nearest.add(new CollideComponent(Vector2.of(0f, 0f), Vector2.of(10f, 10f)));
 
       // Collider spans [0, 20) x [0, 20): it contains the point, but its center is farther away.
       Entity farther = new Entity();
       farther.add(new PositionComponent(0f, 0f));
-      farther.add(
-          new CollideComponent(Vector2.of(0f, 0f), Vector2.of(20f, 20f)));
+      farther.add(new CollideComponent(Vector2.of(0f, 0f), Vector2.of(20f, 20f)));
 
       Optional<Entity> result =
           EntityUtils.findEntityAtPoint(
