@@ -8,36 +8,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import contrib.components.CollideComponent;
 import core.Entity;
-import core.Game;
 import core.components.DrawComponent;
 import core.components.PositionComponent;
 import core.utils.Point;
 import core.utils.Vector2;
 import java.util.Optional;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 /** Tests for {@link EntityUtils}. */
 class EntityUtilsTest {
-
-  /** Removes entities registered by a test so tests remain isolated. */
-  @AfterEach
-  void removeEntitiesAfterEachTest() {
-    Game.removeAllEntities();
-  }
-
-  /** Creates and registers an entity with the supplied components. */
-  private static Entity spawn(
-      final PositionComponent positionComponent,
-      final CollideComponent collideComponent) {
-    Entity entity = new Entity();
-    entity.add(positionComponent);
-    entity.add(collideComponent);
-    Game.add(entity);
-    return entity;
-  }
 
   /**
    * Creates a mocked {@link DrawComponent} that reports the given sprite size.
@@ -207,7 +188,7 @@ class EntityUtilsTest {
   /**
    * Tests for the player-accessor methods of {@link EntityUtils} when no player is present.
    *
-   * <p>The shared game state is cleared after every test so {@link Game#player()} reports no player.
+   * <p>This test assumes the game starts without a registered player.
    */
   @Nested
   class PlayerAccessors {
@@ -248,24 +229,27 @@ class EntityUtilsTest {
     void selectsTheClosestOverlappingEntityUnderThePoint() {
       Point point = new Point(5f, 5f);
 
-      // Collider spans [0, 2) x [0, 2) -> does not contain the point, must be excluded.
-      spawn(
-          new PositionComponent(0f, 0f),
+      // Collider spans [0, 2) x [0, 2): it does not contain the point.
+      Entity outside = new Entity();
+      outside.add(new PositionComponent(0f, 0f));
+      outside.add(
           new CollideComponent(Vector2.of(0f, 0f), Vector2.of(2f, 2f)));
 
-      // Collider spans [0, 10) x [0, 10) -> contains the point, center is exactly the point.
-      Entity nearest =
-          spawn(
-              new PositionComponent(0f, 0f),
-              new CollideComponent(Vector2.of(0f, 0f), Vector2.of(10f, 10f)));
+      // Collider spans [0, 10) x [0, 10): its center is exactly the tested point.
+      Entity nearest = new Entity();
+      nearest.add(new PositionComponent(0f, 0f));
+      nearest.add(
+          new CollideComponent(Vector2.of(0f, 0f), Vector2.of(10f, 10f)));
 
-      // Collider spans [0, 20) x [0, 20) -> also contains the point, but its center is farther
-      // away.
-      spawn(
-          new PositionComponent(0f, 0f),
+      // Collider spans [0, 20) x [0, 20): it contains the point, but its center is farther away.
+      Entity farther = new Entity();
+      farther.add(new PositionComponent(0f, 0f));
+      farther.add(
           new CollideComponent(Vector2.of(0f, 0f), Vector2.of(20f, 20f)));
 
-      Optional<Entity> result = EntityUtils.findEntityAtPoint(point, Game.levelEntities());
+      Optional<Entity> result =
+          EntityUtils.findEntityAtPoint(
+              point, java.util.stream.Stream.of(outside, nearest, farther));
 
       assertTrue(result.isPresent(), "an entity containing the point must be found");
       assertSame(
