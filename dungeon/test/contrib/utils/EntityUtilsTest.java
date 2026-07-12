@@ -14,13 +14,30 @@ import core.components.PositionComponent;
 import core.utils.Point;
 import core.utils.Vector2;
 import java.util.Optional;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import testingUtils.GameTestBase;
 
 /** Tests for {@link EntityUtils}. */
 class EntityUtilsTest {
+
+  /** Removes entities registered by a test so tests remain isolated. */
+  @AfterEach
+  void removeEntitiesAfterEachTest() {
+    Game.removeAllEntities();
+  }
+
+  /** Creates and registers an entity with the supplied components. */
+  private static Entity spawn(
+      final PositionComponent positionComponent,
+      final CollideComponent collideComponent) {
+    Entity entity = new Entity();
+    entity.add(positionComponent);
+    entity.add(collideComponent);
+    Game.add(entity);
+    return entity;
+  }
 
   /**
    * Creates a mocked {@link DrawComponent} that reports the given sprite size.
@@ -190,10 +207,10 @@ class EntityUtilsTest {
   /**
    * Tests for the player-accessor methods of {@link EntityUtils} when no player is present.
    *
-   * <p>Uses {@link GameTestBase} so {@link Game#player()} deterministically reports no player.
+   * <p>The shared game state is cleared after every test so {@link Game#player()} reports no player.
    */
   @Nested
-  class PlayerAccessors extends GameTestBase {
+  class PlayerAccessors {
 
     /**
      * U3: without a player in the game, {@link EntityUtils#getPlayerPosition()}, {@link
@@ -221,7 +238,7 @@ class EntityUtilsTest {
    * is closest to the point wins.
    */
   @Nested
-  class FindEntityAtPointIntegration extends GameTestBase {
+  class FindEntityAtPointIntegration {
 
     /**
      * Among several entities, some of which overlap the point, {@code findEntityAtPoint()} must
