@@ -33,17 +33,17 @@ public class moveHeroTest {
     private Map<Integer, InputData> mockKeyBindings;
     private InputComponent mockInputComponent;
 
-    //helper funktion to compare two vectors of Vector2 class. there is no equals methode in Vector2 class
+    //helper function to compare two vectors of Vector2 class. there is no equals method in Vector2 class
     private boolean compareVector2(Vector2 a, Vector2 b){
         return (a != null && b != null && (a.x() == b.x()) && (a.y() == b.y()));
     }
 
-    //helper funktion to set applied force of hero. there is no setPositoin methode to set parameter for movement
+    //helper function to set applied force of hero. there is no setPosition method to set parameter for movement
     private void setAppliedForceOfVelocityComponentOfHeroBeforeMovement(Vector2 forceToApply){
         this.mockVelocityComponent.applyForce(HeroController.MOVEMENT_ID, forceToApply);
     }
 
-    //helper funktion to get applierd force of hero. there is no getPosition methode to get information from movement
+    //helper function to get applied force of hero. there is no getPosition method to get information from movement
     private Vector2 getAppliedForceFromVelocityComponentOfHeroAfterMovement(){
         Map<String, Vector2> forces = this.mockVelocityComponent.appliedForces();
         Vector2 forceOfInterest = forces.get(HeroController.MOVEMENT_ID);
@@ -75,12 +75,12 @@ public class moveHeroTest {
 
         //assert
         Vector2 appliedForceAfterMovement = this.getAppliedForceFromVelocityComponentOfHeroAfterMovement();
-        assertTrue(this.compareVector2(appliedForceAfterMovement, direction), "dierection of the hero is not equals directiun up");
+        assertTrue(this.compareVector2(appliedForceAfterMovement, direction), "force applied to hero is not direction up");
     }
 
     //G2. InputComponent vorhanden, Steuerung aktiviert, Bewegungsrichtung erlaubt
     @Test
-    void moveHero_InputComponentWithUPKeyBinding_DirectionUpSpeedOne_ForceAppliedToHeroEqualsDirection(){
+    void moveHero_InputComponentAllowedUpMovement_DirectionUpSpeedOne_ForceAppliedToHeroEqualsDirection(){
         //arrange
         Direction direction = Direction.UP;
         Vector2 speed = Vector2.ONE;
@@ -99,7 +99,7 @@ public class moveHeroTest {
 
         //assert
         Vector2 appliedForceAfterMovement = this.getAppliedForceFromVelocityComponentOfHeroAfterMovement();
-        assertTrue(this.compareVector2(appliedForceAfterMovement, direction), "dierection of the hero is not equals directiun up");  
+        assertTrue(this.compareVector2(appliedForceAfterMovement, direction), "force applied to hero is not direction up");  
     }
 
     //G3. Keine bestehende Bewegungs-Kraft vorhanden
@@ -115,12 +115,12 @@ public class moveHeroTest {
 
         //assert
         Vector2 appliedForceAfterMovement = this.getAppliedForceFromVelocityComponentOfHeroAfterMovement();
-        assertTrue(this.compareVector2(appliedForceAfterMovement, direction), "TODO");  
+        assertTrue(this.compareVector2(appliedForceAfterMovement, direction), "force applied to hero is not direction up");  
     }
 
     //G4. Bereits vorhandene Bewegungs-Kraft vorhanden
     @Test
-    void moveHero_test(){
+    void moveHero_DirectionUpSpeedOneVelocityComponentContainsDiagonalForce_ForceAppliedToHeroEqualsOfInput(){
         //arrange
         Direction direction = Direction.UP;
         Vector2 speed = Vector2.ONE;
@@ -134,12 +134,12 @@ public class moveHeroTest {
         //assert
         Vector2 normalizedForceInX1Y2Dierection = Vector2.of(1.0f/Math.sqrt(5.0f), 2.0f/Math.sqrt(5.0f));
         Vector2 appliedForceAfterMovement = this.getAppliedForceFromVelocityComponentOfHeroAfterMovement();
-        assertTrue(this.compareVector2(appliedForceAfterMovement, normalizedForceInX1Y2Dierection), "TODO");
+        assertTrue(this.compareVector2(appliedForceAfterMovement, normalizedForceInX1Y2Dierection), "force applied to hero is not the sum of directions");
     }
 
     //G5. Bewegung entlang einer einzelnen Achse
     @Test
-    void moveHero_DirectionUpSpeedOneVelocityComponentUp_ForceAppliedToHeroUpVector(){
+    void moveHero_DirectionUpSpeedOneVelocityComponentContainsUpForce_ForceAppliedToHeroEqualsUpForce(){
         //arrange
         Direction direction = Direction.UP;
         Vector2 speed = Vector2.ONE;
@@ -152,12 +152,12 @@ public class moveHeroTest {
 
         //assert
         Vector2 appliedForceAfterMovement = this.getAppliedForceFromVelocityComponentOfHeroAfterMovement();
-        assertTrue(this.compareVector2(appliedForceAfterMovement, forceInX0Y1Direction), "dierection of the hero is not equals directiun up");
+        assertTrue(this.compareVector2(appliedForceAfterMovement, forceInX0Y1Direction), "force applied to hero is not direction up");
     }
 
     //G6. Vorhandene Kraft und neue Kraft ergeben eine diagonale Bewegung
     @Test
-    void moveHero_DirectionUpSpeedOneVelocityComponentRight_ForceAppliedToHeroDiagonalVector(){
+    void moveHero_DirectionUpSpeedOneVelocityComponentContainsRightForce_ForceAppliedToHeroEqualsDiagonalUpRight(){
         //arrange
         Direction direction = Direction.UP;
         Vector2 speed = Vector2.ONE;
@@ -171,12 +171,12 @@ public class moveHeroTest {
         //assert
         Vector2 normalizedDiagonal = Vector2.of(1.0f/Math.sqrt(2.0f), 1.0f/Math.sqrt(2.0f));
         Vector2 appliedForceAfterMovement = this.getAppliedForceFromVelocityComponentOfHeroAfterMovement();
-        assertTrue(this.compareVector2(appliedForceAfterMovement, normalizedDiagonal), "TODO");
+        assertTrue(this.compareVector2(appliedForceAfterMovement, normalizedDiagonal), "force applied to hero is not the sum of directions");
     }
 
     //U1. Steuerung des Helden deaktiviert
     @Test
-    void moveHero_InputComponentDiactivateControls_FuntionEndsWithoutReturnValue(){
+    void moveHero_InputComponentDiactivateControls_FunctionEndsWithoutReturnValue(){
         //arrange
         Direction direction = Direction.UP;
         Vector2 speed = Vector2.ONE;
@@ -192,7 +192,7 @@ public class moveHeroTest {
 
     //U2. Bewegungsrichtung im InputComponent deaktiviert
     @Test
-    void moveHero_InputComponentActivControlsNoCallbacs_FuntionEndsWithoutReturnValue(){
+    void moveHero_InputComponentWithoutCallbacks_FunctionEndsWithoutReturnValue(){
         //arrange
         Direction direction = Direction.UP;
         Vector2 speed = Vector2.ONE;
@@ -221,7 +221,7 @@ public class moveHeroTest {
         assertThrows(
             MissingComponentException.class,
             () -> {HeroController.moveHero(this.mockHero, direction, speed);},
-            "TODO"
+            "no velocity component expected"
         );
     }
 
@@ -238,7 +238,7 @@ public class moveHeroTest {
 
         //assert
         Vector2 appliedForceAfterMovement = this.getAppliedForceFromVelocityComponentOfHeroAfterMovement();
-        assertNull(appliedForceAfterMovement,"TODO");
+        assertNull(appliedForceAfterMovement,"force applied to hero is not null");
     }
 
     //U5. Vorhandene Kraft und neue Kraft heben sich gegenseitig auf
@@ -257,7 +257,7 @@ public class moveHeroTest {
         
         //assert
         Vector2 appliedForceAfterMovement = this.getAppliedForceFromVelocityComponentOfHeroAfterMovement();
-        assertTrue(this.compareVector2(appliedForceAfterMovement, directionDown), "TODO");
+        assertTrue(this.compareVector2(appliedForceAfterMovement, directionDown), "force applied to hero is not direction down");
     }
 
     //U6. Hero nicht vorhanden
@@ -271,7 +271,7 @@ public class moveHeroTest {
         assertThrows(
             NullPointerException.class,
             () -> {HeroController.moveHero(null, direction, speed);},
-            "TODO"
+            "no hero expected"
         );
     }
 
@@ -286,7 +286,7 @@ public class moveHeroTest {
         assertThrows(
             NullPointerException.class,
             () -> {HeroController.moveHero(this.mockHero, null, speed);},
-            "TODO"
+            "no direction expected"
         );
     }
 
@@ -301,7 +301,7 @@ public class moveHeroTest {
         assertThrows(
             NullPointerException.class,
             () -> {HeroController.moveHero(this.mockHero, direction, null);},
-            "TODO"
+            "no speed expected"
         );
     }
 }
