@@ -21,9 +21,7 @@ public class CookingPotTest {
 
   private static final int DEFAULT_SIZE = 12;
 
-  /**
-   * Äquivalenzklasse: G1. Kochtopf mit gültiger Position erstellen.
-   */
+  /** Äquivalenzklasse: G1. Kochtopf mit gültiger Position erstellen. */
   @Test
   public void test_G1_cookingPot_valid_position() {
     Point position = new Point(3.5f, -2.1f);
@@ -36,9 +34,7 @@ public class CookingPotTest {
     assertEquals(position, pot.fetch(PositionComponent.class).get().position());
   }
 
-  /**
-   * Äquivalenzklasse: G2. Mehrere Kochtöpfe an unterschiedlichen Positionen erstellen.
-   */
+  /** Äquivalenzklasse: G2. Mehrere Kochtöpfe an unterschiedlichen Positionen erstellen. */
   @Test
   public void test_G2_multiple_cookingPots_different_positions() {
     Point pos1 = new Point(1f, 1f);
@@ -54,9 +50,7 @@ public class CookingPotTest {
     assertEquals(pos2, pot2.fetch(PositionComponent.class).get().position());
   }
 
-  /**
-   * Äquivalenzklasse: G3. Mehrere Kochtöpfe an derselben Position erstellen.
-   */
+  /** Äquivalenzklasse: G3. Mehrere Kochtöpfe an derselben Position erstellen. */
   @Test
   public void test_G3_multiple_cookingPots_same_position() {
     Point position = new Point(5f, 5f);
@@ -71,9 +65,7 @@ public class CookingPotTest {
     assertEquals(position, pot2.fetch(PositionComponent.class).get().position());
   }
 
-  /**
-   * Äquivalenzklasse: U1. Position ist null.
-   */
+  /** Äquivalenzklasse: U1. Position ist null. */
   @Test
   public void test_U1_position_null() {
     try {
@@ -83,9 +75,7 @@ public class CookingPotTest {
     }
   }
 
-  /**
-   * Äquivalenzklasse: U2. Kochtopf-Textur kann nicht geladen werden.
-   */
+  /** Äquivalenzklasse: U2. Kochtopf-Textur kann nicht geladen werden. */
   @Test
   public void test_U2_texture_load_fails() {
     try {
@@ -96,9 +86,7 @@ public class CookingPotTest {
     }
   }
 
-  /**
-   * Äquivalenzklasse: U3. Animation-Erstellung schlägt fehl.
-   */
+  /** Äquivalenzklasse: U3. Animation-Erstellung schlägt fehl. */
   @Test
   public void test_U3_animation_creation_fails() {
     try {
@@ -109,9 +97,7 @@ public class CookingPotTest {
     }
   }
 
-  /**
-   * Äquivalenzklasse: U4. PositionComponent akzeptiert die übergebene Position nicht.
-   */
+  /** Äquivalenzklasse: U4. PositionComponent akzeptiert die übergebene Position nicht. */
   @Test
   public void test_U4_position_not_accepted() {
     try {
@@ -122,9 +108,7 @@ public class CookingPotTest {
     }
   }
 
-  /**
-   * Äquivalenzklasse: U5. Name-Zuweisung schlägt fehl.
-   */
+  /** Äquivalenzklasse: U5. Name-Zuweisung schlägt fehl. */
   @Test
   public void test_U5_name_assignment_fails() {
     try {
@@ -135,9 +119,7 @@ public class CookingPotTest {
     }
   }
 
-  /**
-   * Äquivalenzklasse: U6. DrawComponent fehlt nach der Initialisierung.
-   */
+  /** Äquivalenzklasse: U6. DrawComponent fehlt nach der Initialisierung. */
   @Test
   public void test_U6_draw_component_missing() {
     try {
@@ -148,9 +130,7 @@ public class CookingPotTest {
     }
   }
 
-  /**
-   * Äquivalenzklasse: U7. Instanziierung wirft eine unerwartete RuntimeException.
-   */
+  /** Äquivalenzklasse: U7. Instanziierung wirft eine unerwartete RuntimeException. */
   @Test
   public void test_U7_unexpected_runtime_exception() {
     try {
@@ -161,9 +141,7 @@ public class CookingPotTest {
     }
   }
 
-  /**
-   * Äquivalenzklasse: U8. InteractionComponent fehlt am Kochtopf.
-   */
+  /** Äquivalenzklasse: U8. InteractionComponent fehlt am Kochtopf. */
   @Test
   public void test_U8_interaction_component_missing() {
     try {
@@ -174,9 +152,7 @@ public class CookingPotTest {
     }
   }
 
-  /**
-   * Äquivalenzklasse: U9. Kochen-Trigger schlägt ohne Zutaten fehl.
-   */
+  /** Äquivalenzklasse: U9. Kochen-Trigger schlägt ohne Zutaten fehl. */
   @Test
   public void test_U9_cooking_trigger_fails_without_ingredients() {
     try {
