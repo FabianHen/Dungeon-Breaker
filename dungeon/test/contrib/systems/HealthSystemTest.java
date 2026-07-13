@@ -17,13 +17,25 @@ import contrib.utils.components.health.FakeHealthObserver;
 import core.Entity;
 import core.FakeGame;
 import core.components.DrawComponent;
+import core.components.PositionComponent;
+import core.utils.Direction;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 /** test class */
 public class HealthSystemTest {
-  private final FakeGame game = new FakeGame();
-  private final MockHealthSystem system = new MockHealthSystem(game);
-  private final Entity entity = new Entity("test");
+  private FakeGame game;
+  private MockHealthSystem system;
+  private Entity entity;
+
+  /** setup */
+  @BeforeEach
+  public void setUp() {
+    game = new FakeGame();
+    system = new MockHealthSystem(game);
+    entity = new Entity("test");
+  }
 
   @Test
   void calculateDamage_singleDamage_returnsDamage() {
@@ -409,5 +421,106 @@ public class HealthSystemTest {
 
     assertEquals(1, system.observers.size());
     assertTrue(system.observers.contains(observer));
+  }
+
+  /**
+   * G1: Verifies that an entity with a {@link PositionComponent} triggers the death animation
+   * including its current view direction.
+   *
+   * <p>Expected:
+   *
+   * <ul>
+   *   <li>The death signal is sent exactly once.
+   *   <li>The current view direction is passed to the DrawComponent.
+   * </ul>
+   */
+  @Test
+  void activateDeathAnimationWithPositionComponent() {
+
+    Entity entity = new Entity();
+
+    PositionComponent positionComponent = Mockito.mock(PositionComponent.class);
+    Mockito.when(positionComponent.viewDirection()).thenReturn(Direction.UP);
+
+    DrawComponent drawComponent = Mockito.mock(DrawComponent.class);
+
+    entity.add(positionComponent);
+
+    HealthComponent healthComponent = new HealthComponent(100);
+
+    HealthSystem.HSData data = new HealthSystem.HSData(entity, healthComponent, drawComponent);
+
+    system.activateDeathAnimationPublic(data);
+
+    Mockito.verify(drawComponent, Mockito.times(1))
+        .sendSignal(HealthSystem.DEATH_SIGNAL, Direction.UP);
+  }
+
+  /**
+   * G2: Verifies that an entity without a {@link PositionComponent} still triggers the death
+   * animation.
+   *
+   * <p>Expected:
+   *
+   * <ul>
+   *   <li>The death signal is sent exactly once.
+   *   <li>No direction is passed to the DrawComponent.
+   * </ul>
+   */
+  @Test
+  void activateDeathAnimationWithoutPositionComponent() {
+
+    Entity entity = new Entity();
+
+    DrawComponent drawComponent = Mockito.mock(DrawComponent.class);
+
+    HealthComponent healthComponent = new HealthComponent(100);
+
+    HealthSystem.HSData data = new HealthSystem.HSData(entity, healthComponent, drawComponent);
+
+    system.activateDeathAnimationPublic(data);
+
+    Mockito.verify(drawComponent, Mockito.times(1)).sendSignal(HealthSystem.DEATH_SIGNAL);
+
+    Mockito.verify(drawComponent, Mockito.never())
+        .sendSignal(Mockito.eq(HealthSystem.DEATH_SIGNAL), Mockito.any());
+  }
+
+  /**
+   * U1: Verifies that a {@link NullPointerException} is thrown if the {@link DrawComponent} is
+   * missing.
+   *
+   * <p>Expected:
+   *
+   * <ul>
+   *   <li>The method cannot send the death signal.
+   *   <li>A {@link NullPointerException} is thrown.
+   * </ul>
+   */
+  @Test
+  void activateDeathAnimationWithoutDrawComponentThrowsException() {
+
+    Entity entity = new Entity();
+
+    HealthComponent healthComponent = new HealthComponent(100);
+
+    HealthSystem.HSData data = new HealthSystem.HSData(entity, healthComponent, null);
+
+    assertThrows(NullPointerException.class, () -> system.activateDeathAnimationPublic(data));
+  }
+
+  /**
+   * U2: Verifies that passing {@code null} as HSData causes a {@link NullPointerException}.
+   *
+   * <p>Expected:
+   *
+   * <ul>
+   *   <li>The method throws a {@link NullPointerException}.
+   * </ul>
+   */
+  @Test
+  void activateDeathAnimationWithNullHSDataThrowsException() {
+
+    assertThrows(NullPointerException.class, () -> system.activateDeathAnimationPublic(null));
   }
 }
