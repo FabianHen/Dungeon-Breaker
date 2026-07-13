@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+/** Test für MiscFactory.newDestroyableObject() */
 public class NewDestroyableObjectTest {
   private static final SimpleIPath VASE = new SimpleIPath("objects/vase");
   private static final SimpleIPath STONE = new SimpleIPath("objects/stone");
