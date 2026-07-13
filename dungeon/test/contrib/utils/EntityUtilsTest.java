@@ -7,17 +7,24 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import contrib.components.CollideComponent;
+import contrib.entities.HeroController;
+import contrib.modules.interaction.IInteractable;
+import contrib.modules.interaction.Interaction;
+import contrib.modules.interaction.InteractionComponent;
 import core.Entity;
 import core.Game;
 import core.components.DrawComponent;
 import core.components.PositionComponent;
 import core.utils.Point;
 import core.utils.Vector2;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import testingUtils.GameTestBase;
+import testingUtils.TestGame;
 
 /** Tests for {@link EntityUtils}. */
 class EntityUtilsTest {
@@ -255,6 +262,191 @@ class EntityUtilsTest {
           nearest,
           result.get(),
           "the entity whose center is closest to the point must be selected among overlapping ones");
+    }
+  }
+
+  /** Tests for {@link HeroController#findInteractablesInRange(Entity)}. */
+  @Nested
+  class FindInteractablesInRange extends GameTestBase {
+
+    private Entity createInteractable(float x, float y, float range) {
+      IInteractable interactable =
+          new IInteractable() {
+            @Override
+            public Interaction interact() {
+              return new Interaction((e, w) -> {}, range);
+            }
+          };
+      return spawn(new PositionComponent(x, y), new InteractionComponent(interactable));
+    }
+
+    /** U1: Hero ist null -> NullPointerException bei EntityUtils.getPosition(hero) */
+    @Test
+    void throwsNullPointerException_whenHeroIsNull() {
+      org.junit.jupiter.api.Assertions.assertThrows(
+          NullPointerException.class,
+          () -> HeroController.findInteractablesInRange(null),
+          "findInteractablesInRange must throw NullPointerException if hero is null");
+    }
+
+    /** G1: Keine interagierbaren Entities vorhanden -> Leere Liste wird zurückgegeben */
+    @Test
+    void returnsEmptyList_whenNoInteractableEntitiesExist() {
+      Entity hero = spawn(new PositionComponent(0f, 0f));
+      // No interactables in the game
+      List<Entity> result = HeroController.findInteractablesInRange(hero);
+      assertTrue(result.isEmpty(), "Result must be empty when no interactables exist");
+    }
+
+    /** G2: Ein Entity innerhalb der Reichweite -> Liste enthält genau dieses Entity */
+    @Test
+    void returnsEntity_whenOneEntityIsWithinRange() {
+      Entity hero = spawn(new PositionComponent(0f, 0f));
+      Entity interactable = createInteractable(1f, 0f, 2f); // distance=1, range=2
+
+      List<Entity> result = HeroController.findInteractablesInRange(hero);
+
+      assertEquals(1, result.size(), "Result must contain exactly one entity");
+      assertTrue(
+          result.contains(interactable), "Result must contain the interactable entity in range");
+    }
+
+    /**
+     * G3: Mehrere Entities innerhalb der Reichweite -> Alle passenden Entities werden zurückgegeben
+     */
+    @Test
+    void returnsAllEntities_whenMultipleEntitiesAreWithinRange() {
+      Entity hero = spawn(new PositionComponent(0f, 0f));
+      Entity i1 = createInteractable(1f, 0f, 2f);
+      Entity i2 = createInteractable(0f, 1f, 2f);
+
+      List<Entity> result = HeroController.findInteractablesInRange(hero);
+
+      assertEquals(2, result.size(), "Result must contain all entities within range");
+      assertTrue(
+          result.contains(i1) && result.contains(i2),
+          "Result must contain both interactable entities");
+    }
+
+    /**
+     * G4: Mischung aus Entities innerhalb und außerhalb der Reichweite -> Nur Entities innerhalb
+     * der Reichweite werden zurückgegeben
+     */
+    @Test
+    void returnsOnlyEntitiesWithinRange_whenMixedEntitiesExist() {
+      Entity hero = spawn(new PositionComponent(0f, 0f));
+      Entity inRange = createInteractable(1f, 0f, 2f); // distance=1, range=2
+      Entity outOfRange = createInteractable(3f, 0f, 2f); // distance=3, range=2
+
+      List<Entity> result = HeroController.findInteractablesInRange(hero);
+
+      assertEquals(1, result.size(), "Result must contain only the entity within range");
+      assertTrue(result.contains(inRange), "Result must contain the entity within range");
+    }
+
+    /** G5: Entity genau auf der Reichweitengrenze -> Entity wird zurückgegeben */
+    @Test
+    void returnsEntity_whenEntityIsExactlyOnRangeBorder() {
+      Entity hero = spawn(new PositionComponent(0f, 0f));
+      Entity exactRange = createInteractable(2f, 0f, 2f); // distance=2, range=2
+
+      List<Entity> result = HeroController.findInteractablesInRange(hero);
+
+      assertEquals(1, result.size(), "Result must contain the entity exactly on the range border");
+      assertTrue(
+          result.contains(exactRange),
+          "Result must contain the entity exactly on the range border");
+    }
+
+    /**
+     * G6: Mehrere gültige Entities mit unterschiedlichen Reichweiten -> Für jedes Entity wird die
+     * individuelle Reichweite verwendet
+     */
+    @Test
+    void evaluatesIndividualRanges_whenEntitiesHaveDifferentRanges() {
+      Entity hero = spawn(new PositionComponent(0f, 0f));
+      // Entity at distance 3, range 4 -> should be included
+      Entity i1 = createInteractable(3f, 0f, 4f);
+      // Entity at distance 3, range 2 -> should be excluded
+      Entity i2 = createInteractable(0f, 3f, 2f);
+
+      List<Entity> result = HeroController.findInteractablesInRange(hero);
+
+      assertEquals(
+          1,
+          result.size(),
+          "Result must only contain the entity whose individual range condition is met");
+      assertTrue(result.contains(i1), "Result must contain the entity with the larger range");
+    }
+
+    /**
+     * U2: Entity ohne InteractionComponent trotz Vorfilter -> orElseThrow() wird ausgelöst
+     * (NoSuchElementException)
+     */
+    @Test
+    void throwsNoSuchElementException_whenEntityLacksInteractionComponent() {
+      Entity hero = new Entity();
+      hero.add(new PositionComponent(0f, 0f));
+
+      Entity faultyEntity = new Entity();
+      faultyEntity.add(new PositionComponent(1f, 0f));
+      // Missing InteractionComponent
+
+      try (org.mockito.MockedStatic<Game> mockedGame = TestGame.withEntities(faultyEntity)) {
+        org.junit.jupiter.api.Assertions.assertThrows(
+            NoSuchElementException.class,
+            () -> HeroController.findInteractablesInRange(hero),
+            "Method must throw NoSuchElementException if an entity in the stream lacks InteractionComponent");
+      }
+    }
+
+    /**
+     * U3: Entity ohne PositionComponent trotz Vorfilter -> NoSuchElementException beim Zugriff auf
+     * die Position
+     */
+    @Test
+    void throwsNoSuchElementException_whenEntityLacksPositionComponent() {
+      Entity hero = new Entity();
+      hero.add(new PositionComponent(0f, 0f));
+
+      Entity faultyEntity = new Entity();
+      IInteractable interactable =
+          new IInteractable() {
+            @Override
+            public Interaction interact() {
+              return new Interaction((e, w) -> {}, 2f);
+            }
+          };
+      faultyEntity.add(new InteractionComponent(interactable));
+      // Missing PositionComponent
+
+      try (org.mockito.MockedStatic<Game> mockedGame = TestGame.withEntities(faultyEntity)) {
+        org.junit.jupiter.api.Assertions.assertThrows(
+            NoSuchElementException.class,
+            () -> HeroController.findInteractablesInRange(hero),
+            "Method must throw NoSuchElementException if an entity in the stream lacks PositionComponent");
+      }
+    }
+
+    /**
+     * U4: Negative Reichweite -> Die Berechnung verwendet dennoch range * range (wird quadriert)
+     * und bewertet das Entity als gültig.
+     */
+    @Test
+    void includesEntity_whenRangeIsNegativeButSquaredDistanceIsSmaller() {
+      Entity hero = spawn(new PositionComponent(0f, 0f));
+      // Range is -2, distance is 1. Squared distance is 1, squared range is 4.
+      Entity negativeRangeEntity = createInteractable(1f, 0f, -2f);
+
+      List<Entity> result = HeroController.findInteractablesInRange(hero);
+
+      assertEquals(
+          1,
+          result.size(),
+          "Result must contain the entity since the negative range is squared and therefore positive");
+      assertTrue(
+          result.contains(negativeRangeEntity),
+          "Entity with negative range is included due to squaring");
     }
   }
 }
