@@ -19,8 +19,8 @@ import org.mockito.MockedStatic;
  * Tests für {@code HeroController.openInventory(Entity)}.
  *
  * <p>Deckt sowohl gültige als auch ungültige Äquivalenzklassen ab: erfolgreiches Öffnen des
- * Inventars, bereits geöffnetes Inventar, {@code null}-Hero, andere offene Dialoge sowie
- * fehlende {@link InventoryComponent} bzw. {@link PlayerComponent}.
+ * Inventars, bereits geöffnetes Inventar, {@code null}-Hero, andere offene Dialoge sowie fehlende
+ * {@link InventoryComponent} bzw. {@link PlayerComponent}.
  */
 public class OpenInventoryTest {
 
