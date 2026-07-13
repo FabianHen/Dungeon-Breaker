@@ -1,48 +1,42 @@
 package contrib.modules.keypadFolder;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import contrib.modules.keypad.KeypadComponent;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import contrib.modules.keypad.KeypadComponent;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Test;
 
 class CheckUnlockTest {
 
-    @Test
-    void checkUnlockUnlocksCorrectCode() {
+  @Test
+  void checkUnlockUnlocksCorrectCode() {
 
-        AtomicBoolean executed = new AtomicBoolean(false);
+    AtomicBoolean executed = new AtomicBoolean(false);
 
-        KeypadComponent keypad =
-                new KeypadComponent(List.of(1,2,3),
-                        () -> executed.set(true),
-                        false);
+    KeypadComponent keypad = new KeypadComponent(List.of(1, 2, 3), () -> executed.set(true), false);
 
-        keypad.enteredDigits().addAll(List.of(1,2,3));
+    keypad.enteredDigits().addAll(List.of(1, 2, 3));
 
-        keypad.checkUnlock();
+    keypad.checkUnlock();
 
-        assertTrue(keypad.isUnlocked());
-        assertTrue(executed.get());
-    }
+    assertTrue(keypad.isUnlocked());
+    assertTrue(executed.get());
+  }
 
-    @Test
-    void checkUnlockRejectsWrongCode() {
+  @Test
+  void checkUnlockRejectsWrongCode() {
 
-        AtomicBoolean executed = new AtomicBoolean(false);
+    AtomicBoolean executed = new AtomicBoolean(false);
 
-        KeypadComponent keypad =
-                new KeypadComponent(List.of(1,2,3),
-                        () -> executed.set(true),
-                        false);
+    KeypadComponent keypad = new KeypadComponent(List.of(1, 2, 3), () -> executed.set(true), false);
 
-        keypad.enteredDigits().addAll(List.of(1,2,4));
+    keypad.enteredDigits().addAll(List.of(1, 2, 4));
 
-        keypad.checkUnlock();
+    keypad.checkUnlock();
 
-        assertFalse(keypad.isUnlocked());
-        assertFalse(executed.get());
-    }
+    assertFalse(keypad.isUnlocked());
+    assertFalse(executed.get());
+  }
 }
