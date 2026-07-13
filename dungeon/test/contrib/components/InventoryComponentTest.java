@@ -7,6 +7,11 @@ import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import contrib.item.Item;
 import core.Entity;
@@ -384,7 +389,110 @@ public class InventoryComponentTest {
     Item notInInventory = mock(Item.class);
     assertFalse(ic.removeOne(notInInventory));
   }
+  /** count() should return the number of occupied slots in a mixed inventory. */
+  @Test
+  public void count_MixedInventory() {
+    InventoryComponent inventory = new InventoryComponent(3);
+    Item firstItem =
+      new Item("First item", "Description", new Animation(MISSING_TEXTURE));
+    Item secondItem =
+      new Item("Second item", "Description", new Animation(MISSING_TEXTURE));
 
+    inventory.set(0, firstItem);
+    inventory.set(2, secondItem);
+
+    assertEquals(2, inventory.count());
+  }
+
+  /** count() should return zero for an empty inventory. */
+  @Test
+  public void count_EmptyInventory() {
+    InventoryComponent inventory = new InventoryComponent(3);
+
+    assertEquals(0, inventory.count());
+  }
+
+  /** count() should return the inventory length when all slots are occupied. */
+  @Test
+  public void count_FullInventory() {
+    InventoryComponent inventory = new InventoryComponent(3);
+
+    inventory.set(
+      0, new Item("First item", "Description", new Animation(MISSING_TEXTURE)));
+    inventory.set(
+      1, new Item("Second item", "Description", new Animation(MISSING_TEXTURE)));
+    inventory.set(
+      2, new Item("Third item", "Description", new Animation(MISSING_TEXTURE)));
+
+    assertEquals(3, inventory.count());
+  }
+
+  /** items() should return a defensive copy of the internal inventory array. */
+  @Test
+  public void items_ShouldReturnDefensiveCopy() {
+    InventoryComponent inventory = new InventoryComponent(2);
+    Item item = new Item("Test item", "Description", new Animation(MISSING_TEXTURE));
+    inventory.set(0, item);
+
+    Item[] returnedItems = inventory.items();
+
+    assertNotSame(returnedItems, inventory.items());
+    returnedItems[0] = null;
+
+    assertEquals(1, inventory.count());
+    assertTrue(inventory.get(0).isPresent());
+    assertEquals(item, inventory.get(0).orElseThrow());
+  }
+
+  /** isEmpty() should return true when no slot is occupied. */
+  @Test
+  public void isEmpty_EmptyInventory() {
+    InventoryComponent inventory = new InventoryComponent(2);
+
+    assertTrue(inventory.isEmpty());
+  }
+
+  /** isEmpty() should return false when at least one slot is occupied. */
+  @Test
+  public void isEmpty_InventoryContainsItem() {
+    InventoryComponent inventory = new InventoryComponent(2);
+    Item item = new Item("Test item", "Description", new Animation(MISSING_TEXTURE));
+    inventory.set(0, item);
+
+    assertFalse(inventory.isEmpty());
+  }
+
+  /**
+   * clear() should empty every slot and execute onItemRemoved once for every inventory slot,
+   * including empty slots.
+   */
+  @Test
+  public void clear_MixedInventory() {
+    InventoryComponent inventory = new InventoryComponent(3);
+    Item firstItem =
+      new Item("First item", "Description", new Animation(MISSING_TEXTURE));
+    Item secondItem =
+      new Item("Second item", "Description", new Animation(MISSING_TEXTURE));
+    List<Item> removedItems = new ArrayList<>();
+
+    inventory.set(0, firstItem);
+    inventory.set(2, secondItem);
+    inventory.onItemRemoved(removedItems::add);
+
+    inventory.clear();
+
+    assertEquals(0, inventory.count());
+    assertTrue(inventory.isEmpty());
+
+    for (Item item : inventory.items()) {
+      assertNull(item);
+    }
+
+    assertEquals(3, removedItems.size());
+    assertEquals(firstItem, removedItems.get(0));
+    assertNull(removedItems.get(1));
+    assertEquals(secondItem, removedItems.get(2));
+  }
   private class DummyItem extends Item {
     public DummyItem(int stackSize, int maxStackSize) {
       super(null, null, null, null, stackSize, maxStackSize);
