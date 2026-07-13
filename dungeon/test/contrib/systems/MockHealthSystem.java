@@ -89,7 +89,4 @@ public class MockHealthSystem extends HealthSystem {
   public HSData activateDeathAnimationPublic(HSData data) {
     return super.activateDeathAnimation(data);
   }
-
 }
-
-
