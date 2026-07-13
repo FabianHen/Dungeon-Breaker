@@ -1,5 +1,10 @@
 package contrib.systems;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import core.level.Tile;
 import core.level.utils.Coordinate;
 import core.level.utils.DesignLabel;
@@ -9,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 class FogSystemTest {
 
