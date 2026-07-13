@@ -1,15 +1,8 @@
 package contrib.entities;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import contrib.components.InventoryComponent;
 import contrib.hud.UIUtils;
@@ -22,6 +15,13 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
+/**
+ * Tests für {@code HeroController.openInventory(Entity)}.
+ *
+ * <p>Deckt sowohl gültige als auch ungültige Äquivalenzklassen ab: erfolgreiches Öffnen des
+ * Inventars, bereits geöffnetes Inventar, {@code null}-Hero, andere offene Dialoge sowie
+ * fehlende {@link InventoryComponent} bzw. {@link PlayerComponent}.
+ */
 public class OpenInventoryTest {
 
   @Test
