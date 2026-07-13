@@ -1,5 +1,8 @@
 package contrib.entities;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import contrib.components.CollideComponent;
 import contrib.components.InventoryComponent;
 import contrib.item.Item;
@@ -11,17 +14,13 @@ import core.components.DrawComponent;
 import core.components.PositionComponent;
 import core.utils.Point;
 import core.utils.components.path.SimpleIPath;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 public class NewDestroyableObjectTest {
   private static final SimpleIPath VASE = new SimpleIPath("objects/vase");
@@ -48,8 +47,8 @@ public class NewDestroyableObjectTest {
 
   @Test
   void newDestroyableObject_WithoutRequiredItem_HasPositionComponent() {
-    //Arrange & Act
-    Entity obj = MiscFactory.newDestroyableObject("vase", VASE, new Point(0,0), null, Set.of());
+    // Arrange & Act
+    Entity obj = MiscFactory.newDestroyableObject("vase", VASE, new Point(0, 0), null, Set.of());
 
     // Assert
     assertTrue(obj.isPresent(PositionComponent.class));
@@ -57,8 +56,8 @@ public class NewDestroyableObjectTest {
 
   @Test
   void newDestroyableObject_WithoutRequiredItem_HasInventoryComponent() {
-    //Arrange & Act
-    Entity obj = MiscFactory.newDestroyableObject("vase", VASE, new Point(0,0), null, Set.of());
+    // Arrange & Act
+    Entity obj = MiscFactory.newDestroyableObject("vase", VASE, new Point(0, 0), null, Set.of());
 
     // Assert
     assertTrue(obj.isPresent(InventoryComponent.class));
@@ -66,8 +65,8 @@ public class NewDestroyableObjectTest {
 
   @Test
   void newDestroyableObject_WithoutRequiredItem_HasCollideComponent() {
-    //Arrange & Act
-    Entity obj = MiscFactory.newDestroyableObject("vase", VASE, new Point(0,0), null, Set.of());
+    // Arrange & Act
+    Entity obj = MiscFactory.newDestroyableObject("vase", VASE, new Point(0, 0), null, Set.of());
 
     // Assert
     assertTrue(obj.isPresent(CollideComponent.class));
@@ -75,8 +74,8 @@ public class NewDestroyableObjectTest {
 
   @Test
   void newDestroyableObject_WithoutRequiredItem_HasDrawComponent() {
-    //Arrange & Act
-    Entity obj = MiscFactory.newDestroyableObject("vase", VASE, new Point(0,0), null, Set.of());
+    // Arrange & Act
+    Entity obj = MiscFactory.newDestroyableObject("vase", VASE, new Point(0, 0), null, Set.of());
 
     // Assert
     assertTrue(obj.isPresent(DrawComponent.class));
@@ -84,8 +83,8 @@ public class NewDestroyableObjectTest {
 
   @Test
   void newDestroyableObject_WithoutRequiredItem_HasInteractionComponent() {
-    //Arrange & Act
-    Entity obj = MiscFactory.newDestroyableObject("vase", VASE, new Point(0,0), null, Set.of());
+    // Arrange & Act
+    Entity obj = MiscFactory.newDestroyableObject("vase", VASE, new Point(0, 0), null, Set.of());
 
     // Assert
     assertTrue(obj.isPresent(InteractionComponent.class));
@@ -93,8 +92,8 @@ public class NewDestroyableObjectTest {
 
   @Test
   void newDestroyableObject_WhenCreated_StartsInIdleState() {
-    //Arrange & Act
-    Entity obj = MiscFactory.newDestroyableObject("vase", VASE, new Point(0,0), null, Set.of());
+    // Arrange & Act
+    Entity obj = MiscFactory.newDestroyableObject("vase", VASE, new Point(0, 0), null, Set.of());
 
     // Assert
     assertEquals("idle", obj.fetch(DrawComponent.class).orElseThrow().currentState().name);
@@ -102,8 +101,8 @@ public class NewDestroyableObjectTest {
 
   @Test
   void newDestroyableObject_WhenCreated_IsSolid() {
-    //Arrange & Act
-    Entity obj = MiscFactory.newDestroyableObject("vase", VASE, new Point(0,0), null, Set.of());
+    // Arrange & Act
+    Entity obj = MiscFactory.newDestroyableObject("vase", VASE, new Point(0, 0), null, Set.of());
 
     // Assert
     assertTrue(obj.fetch(CollideComponent.class).orElseThrow().isSolid());
@@ -112,8 +111,8 @@ public class NewDestroyableObjectTest {
   @Test
   void newDestroyableObject_WithoutRequiredItem_RemovesInteractionComponentOnInteraction() {
     // Arrange
-    Entity obj = MiscFactory.newDestroyableObject("vase", VASE, new Point(0,0), null, Set.of());
-    Entity interactor = interactorAt(new Point(0,0));
+    Entity obj = MiscFactory.newDestroyableObject("vase", VASE, new Point(0, 0), null, Set.of());
+    Entity interactor = interactorAt(new Point(0, 0));
 
     // Act
     obj.fetch(InteractionComponent.class).orElseThrow().triggerInteraction(obj, interactor);
@@ -125,7 +124,9 @@ public class NewDestroyableObjectTest {
   @Test
   void newDestroyableObject_WithoutRequiredItemPresent_RemovesInteractionComponent() {
     // Arrange
-    Entity stone = MiscFactory.newDestroyableObject("stone", STONE, new Point(0,0), ItemHammer.class, Set.of());
+    Entity stone =
+        MiscFactory.newDestroyableObject(
+            "stone", STONE, new Point(0, 0), ItemHammer.class, Set.of());
     Entity hero = heroWithHammer();
 
     // Act
@@ -138,7 +139,9 @@ public class NewDestroyableObjectTest {
   @Test
   void newDestroyableObject_WithRequiredItemPresent_DisablesCollision() {
     // Arrange
-    Entity stone = MiscFactory.newDestroyableObject("stone", STONE, new Point(0,0), ItemHammer.class, Set.of());
+    Entity stone =
+        MiscFactory.newDestroyableObject(
+            "stone", STONE, new Point(0, 0), ItemHammer.class, Set.of());
     Entity hero = heroWithHammer();
 
     // Act
@@ -151,7 +154,9 @@ public class NewDestroyableObjectTest {
   @Test
   void newDestroyableObject_WithRequiredItemPresent_PlaysBreakingAnimation() {
     // Arrange
-    Entity stone = MiscFactory.newDestroyableObject("stone", STONE, new Point(0,0), ItemHammer.class, Set.of());
+    Entity stone =
+        MiscFactory.newDestroyableObject(
+            "stone", STONE, new Point(0, 0), ItemHammer.class, Set.of());
     Entity hero = heroWithHammer();
 
     // Act
@@ -164,7 +169,9 @@ public class NewDestroyableObjectTest {
   @Test
   void newDestroyableObject_WithRequiredItemMissing_KeepsInteractionComponent() {
     // Arrange
-    Entity stone = MiscFactory.newDestroyableObject("stone", STONE, new Point(0,0), ItemHammer.class, Set.of());
+    Entity stone =
+        MiscFactory.newDestroyableObject(
+            "stone", STONE, new Point(0, 0), ItemHammer.class, Set.of());
     Entity hero = heroWithEmptyInventory();
 
     // Act
@@ -177,7 +184,9 @@ public class NewDestroyableObjectTest {
   @Test
   void newDestroyableObject_WithRequiredItemMissing_KeepsCollisionSolid() {
     // Arrange
-    Entity stone = MiscFactory.newDestroyableObject("stone", STONE, new Point(0,0), ItemHammer.class, Set.of());
+    Entity stone =
+        MiscFactory.newDestroyableObject(
+            "stone", STONE, new Point(0, 0), ItemHammer.class, Set.of());
     Entity hero = heroWithEmptyInventory();
 
     // Act
@@ -190,7 +199,9 @@ public class NewDestroyableObjectTest {
   @Test
   void newDestroyableObject_WithRequiredItemMissing_StaysInIdleState() {
     // Arrange
-    Entity stone = MiscFactory.newDestroyableObject("stone", STONE, new Point(0,0), ItemHammer.class, Set.of());
+    Entity stone =
+        MiscFactory.newDestroyableObject(
+            "stone", STONE, new Point(0, 0), ItemHammer.class, Set.of());
     Entity hero = heroWithEmptyInventory();
 
     // Act
@@ -204,7 +215,7 @@ public class NewDestroyableObjectTest {
   void newDestroyableObject_WithEmptyInventory_RemovesInteractionComponent() {
     // Arrange
     Entity vase = MiscFactory.newDestroyableObject("vase", VASE, new Point(0, 0), null, Set.of());
-    Entity interactor = interactorAt(new Point(0,0));
+    Entity interactor = interactorAt(new Point(0, 0));
     // Act
     vase.fetch(InteractionComponent.class).orElseThrow().triggerInteraction(vase, interactor);
 
@@ -217,7 +228,7 @@ public class NewDestroyableObjectTest {
     // Arrange
     Entity vase = MiscFactory.newDestroyableObject("vase", VASE, new Point(0, 0), null, Set.of());
     InventoryComponent inv = vase.fetch(InventoryComponent.class).orElseThrow();
-    Entity interactor = interactorAt(new Point(0,0));
+    Entity interactor = interactorAt(new Point(0, 0));
 
     // Act
     vase.fetch(InteractionComponent.class).orElseThrow().triggerInteraction(vase, interactor);
@@ -231,7 +242,7 @@ public class NewDestroyableObjectTest {
     // Arrange
     Point spawn = new Point(0, 0);
     Entity vase = MiscFactory.newDestroyableObject("vase", VASE, spawn, null, twoMockItem());
-    Entity interactor = interactorAt(new Point(0,0));
+    Entity interactor = interactorAt(new Point(0, 0));
 
     // Act
     vase.fetch(InteractionComponent.class).orElseThrow().triggerInteraction(vase, interactor);
@@ -244,9 +255,10 @@ public class NewDestroyableObjectTest {
   @Test
   void newDestroyableObject_WithMultipleItems_RemovesAllContainedItemsFromInventory() {
     // Arrange
-    Entity vase = MiscFactory.newDestroyableObject("vase", VASE, new Point(0, 0), null, twoMockItem());
+    Entity vase =
+        MiscFactory.newDestroyableObject("vase", VASE, new Point(0, 0), null, twoMockItem());
     InventoryComponent inv = vase.fetch(InventoryComponent.class).orElseThrow();
-    Entity interactor = interactorAt(new Point(0,0));
+    Entity interactor = interactorAt(new Point(0, 0));
 
     // Act
     vase.fetch(InteractionComponent.class).orElseThrow().triggerInteraction(vase, interactor);
@@ -259,7 +271,7 @@ public class NewDestroyableObjectTest {
   void newDestroyableObject_OnInteraction_TransitionsToBreakingState() {
     // Arrange
     Entity vase = MiscFactory.newDestroyableObject("vase", VASE, new Point(0, 0), null, Set.of());
-    Entity interactor = interactorAt(new Point(0,0));
+    Entity interactor = interactorAt(new Point(0, 0));
 
     // Act
     vase.fetch(InteractionComponent.class).orElseThrow().triggerInteraction(vase, interactor);
@@ -272,7 +284,7 @@ public class NewDestroyableObjectTest {
   void newDestroyableObject_OnInteraction_DisablesCollision() {
     // Arrange
     Entity vase = MiscFactory.newDestroyableObject("vase", VASE, new Point(0, 0), null, Set.of());
-    Entity interactor = interactorAt(new Point(0,0));
+    Entity interactor = interactorAt(new Point(0, 0));
 
     // Act
     vase.fetch(InteractionComponent.class).orElseThrow().triggerInteraction(vase, interactor);
@@ -285,7 +297,7 @@ public class NewDestroyableObjectTest {
   void newDestroyableObject_AfterDestruction_HasNoInteractionComponent() {
     // Arrange
     Entity vase = MiscFactory.newDestroyableObject("vase", VASE, new Point(0, 0), null, Set.of());
-    Entity interactor = interactorAt(new Point(0,0));
+    Entity interactor = interactorAt(new Point(0, 0));
 
     // Act
     vase.fetch(InteractionComponent.class).orElseThrow().triggerInteraction(vase, interactor);
@@ -300,26 +312,24 @@ public class NewDestroyableObjectTest {
   void newDestroyableObject_WithNullName_DoesNotThrow() {
     // Act & Assert
     assertDoesNotThrow(
-      () -> MiscFactory.newDestroyableObject(null, VASE, new Point(0,0), null, Set.of())
-    );
+        () -> MiscFactory.newDestroyableObject(null, VASE, new Point(0, 0), null, Set.of()));
   }
 
   @Test
   void newDestroyableObject_WithNullName_CreateEntity() {
     // Arrrange & Act
-    Entity obj = MiscFactory.newDestroyableObject(null, VASE, new Point(0,0), null, Set.of());
+    Entity obj = MiscFactory.newDestroyableObject(null, VASE, new Point(0, 0), null, Set.of());
 
     // Assert
     assertNotNull(obj);
   }
 
   @Test
-  void newDestroyableObject_WithNullTexturePath_ThrowsNullPointerException()  {
+  void newDestroyableObject_WithNullTexturePath_ThrowsNullPointerException() {
     // Act & Assert
     assertThrows(
-      NullPointerException.class,
-      () -> MiscFactory.newDestroyableObject("x", null, new Point(0,0), null, Set.of())
-    );
+        NullPointerException.class,
+        () -> MiscFactory.newDestroyableObject("x", null, new Point(0, 0), null, Set.of()));
   }
 
   @Test
@@ -335,19 +345,27 @@ public class NewDestroyableObjectTest {
   @Test
   void newDestroyableObject_WithNullItems_ThrowsNullPointerException() {
     // Act & Assert
-    assertThrows(NullPointerException.class, () ->  MiscFactory.newDestroyableObject("x", VASE, new Point(0,0), null, null));
+    assertThrows(
+        NullPointerException.class,
+        () -> MiscFactory.newDestroyableObject("x", VASE, new Point(0, 0), null, null));
   }
 
   @Test
   void newDestroyableObject_WithMissingAnimationState_ThrowsIllegalArgumentException() {
     // Act & Assert
-    assertThrows(IllegalArgumentException.class, () -> MiscFactory.newDestroyableObject("x", new SimpleIPath("character/knight"), new Point(0,0), null, Set.of()));
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            MiscFactory.newDestroyableObject(
+                "x", new SimpleIPath("character/knight"), new Point(0, 0), null, Set.of()));
   }
 
   @Test
   void newDestroyableObject_WithInteractorWithoutInventory_KeepsInteractionComponent() {
     // Arrange
-    Entity stone = MiscFactory.newDestroyableObject("stone", STONE, new Point(0,0), ItemHammer.class, Set.of());
+    Entity stone =
+        MiscFactory.newDestroyableObject(
+            "stone", STONE, new Point(0, 0), ItemHammer.class, Set.of());
     Entity interactor = interactorAt(new Point(0, 0));
 
     // Act
@@ -360,7 +378,9 @@ public class NewDestroyableObjectTest {
   @Test
   void newDestroyableObject_WithInteractorWithoutInventory_StaysInIdleState() {
     // Arrange
-    Entity stone = MiscFactory.newDestroyableObject("stone", STONE, new Point(0,0), ItemHammer.class, Set.of());
+    Entity stone =
+        MiscFactory.newDestroyableObject(
+            "stone", STONE, new Point(0, 0), ItemHammer.class, Set.of());
     Entity interactor = interactorAt(new Point(0, 0));
 
     // Act
@@ -374,18 +394,17 @@ public class NewDestroyableObjectTest {
   void newDestroyableObject_WithoutDrawSystem_DoesNotThrow() {
     // Arrange
     Entity vase = MiscFactory.newDestroyableObject("vase", VASE, new Point(0, 0), null, Set.of());
-    InteractionComponent interactionComponent = vase.fetch(InteractionComponent.class).orElseThrow();
+    InteractionComponent interactionComponent =
+        vase.fetch(InteractionComponent.class).orElseThrow();
     Entity interactor = interactorAt(new Point(0, 0));
-    
+
     // Act & Assert
     assertDoesNotThrow(() -> interactionComponent.triggerInteraction(vase, interactor));
   }
 
-
-
-  //------------------------------------
+  // ------------------------------------
   private static Entity heroWithHammer() {
-    Entity hero = interactorAt(new Point(0,0));
+    Entity hero = interactorAt(new Point(0, 0));
     InventoryComponent inv = new InventoryComponent();
     inv.add(new ItemHammer());
     hero.add(inv);
@@ -393,7 +412,7 @@ public class NewDestroyableObjectTest {
   }
 
   private static Entity heroWithEmptyInventory() {
-    Entity hero = interactorAt(new Point(0,0));
+    Entity hero = interactorAt(new Point(0, 0));
     hero.add(new InventoryComponent(1));
     return hero;
   }
@@ -414,5 +433,4 @@ public class NewDestroyableObjectTest {
     entity.add(new PositionComponent(point));
     return entity;
   }
-
 }
