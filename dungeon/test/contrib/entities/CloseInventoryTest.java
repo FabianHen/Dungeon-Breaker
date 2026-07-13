@@ -17,6 +17,13 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 
+/**
+ * Tests für {@code HeroController.closeInventory(Entity)}.
+ *
+ * <p>Deckt sowohl gültige als auch ungültige Äquivalenzklassen ab: Schließen eines passenden
+ * Inventar-Dialogs, kein passendes bzw. kein geöffnetes Inventar in der UI, fehlende {@link
+ * InventoryComponent} bzw. {@link UIComponent} sowie {@code null}-Hero.
+ */
 public class CloseInventoryTest {
   @Mock private Entity mockHero;
 
