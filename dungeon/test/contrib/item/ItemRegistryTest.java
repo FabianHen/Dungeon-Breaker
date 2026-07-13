@@ -8,10 +8,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import core.utils.components.draw.animation.Animation;
 import java.util.Map;
+
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 /** Tests */
 public class ItemRegistryTest {
+  /** Clear */
+  @AfterEach
+  void setup() {
+    ItemRegistry.clearMapsForTests();
+  }
+
 
   /** Tests that looking up an existing item id returns the registered class. */
   @Test
@@ -91,9 +100,9 @@ public class ItemRegistryTest {
   @Test
   void register_withFactory_shouldCreateItem() {
     ItemRegistry.register(
-        "ID", Item.class, data -> new Item("Test", "Description", (Animation) null));
+        "ID1", Item.class, data -> new Item("Test", "Description", (Animation) null));
 
-    var result = ItemRegistry.create("ID", Map.of());
+    var result = ItemRegistry.create("ID1", Map.of());
 
     assertTrue(result.isPresent());
   }
@@ -101,11 +110,11 @@ public class ItemRegistryTest {
   /** Tests that registering a factory for an already registered item allows item creation. */
   @Test
   void registerFactory_shouldRegisterFactory() {
-    ItemRegistry.register("ID", Item.class);
+    ItemRegistry.register("ID2", Item.class);
 
-    ItemRegistry.registerFactory("ID", data -> new Item("Test", "Description", (Animation) null));
+    ItemRegistry.registerFactory("ID2", data -> new Item("Test", "Description", (Animation) null));
 
-    var result = ItemRegistry.create("ID", Map.of());
+    var result = ItemRegistry.create("ID2", Map.of());
 
     assertTrue(result.isPresent());
   }
@@ -119,9 +128,9 @@ public class ItemRegistryTest {
   /** Tests that creating an item without a registered factory returns an empty result. */
   @Test
   void create_withoutFactory_shouldReturnEmpty() {
-    ItemRegistry.register("ID", Item.class);
+    ItemRegistry.register("ID3", Item.class);
 
-    var result = ItemRegistry.create("ID", Map.of());
+    var result = ItemRegistry.create("ID3", Map.of());
 
     assertTrue(result.isEmpty());
   }
@@ -130,9 +139,9 @@ public class ItemRegistryTest {
   @Test
   void create_withNullData_shouldWork() {
     ItemRegistry.register(
-        "ID", Item.class, data -> new Item("Test", "Description", (Animation) null));
+        "ID4", Item.class, data -> new Item("Test", "Description", (Animation) null));
 
-    var result = ItemRegistry.create("ID", null);
+    var result = ItemRegistry.create("ID4", null);
 
     assertTrue(result.isPresent());
   }
@@ -158,11 +167,11 @@ public class ItemRegistryTest {
   /** Tests that retrieving the id of a registered class returns the correct id. */
   @Test
   void idForClass_shouldReturnId() {
-    ItemRegistry.register("ID", Item.class);
+    ItemRegistry.register("ID5", Item.class);
 
     var result = ItemRegistry.idFor(Item.class).orElseThrow();
 
-    assertEquals("ID", result);
+    assertEquals("ID5", result);
   }
 
   /** Tests that retrieving the id of an unknown class returns an empty result. */
@@ -176,12 +185,12 @@ public class ItemRegistryTest {
   /** Tests that retrieving the id of a registered item instance returns the correct id. */
   @Test
   void idForItem_shouldReturnId() {
-    ItemRegistry.register("ID", Item.class);
+    ItemRegistry.register("ID6", Item.class);
     Item item = new Item("Test", "Description", (Animation) null);
 
     String result = ItemRegistry.idFor(item);
 
-    assertEquals("ID", result);
+    assertEquals("ID6", result);
   }
 
   /** Tests that retrieving the id of an unregistered item instance throws an exception. */
@@ -195,7 +204,7 @@ public class ItemRegistryTest {
   /** Tests that checking a registered class returns true. */
   @Test
   void isRegistered_existingClass_shouldReturnTrue() {
-    ItemRegistry.register("ID", Item.class);
+    ItemRegistry.register("ID7", Item.class);
 
     boolean result = ItemRegistry.isRegistered(Item.class);
 

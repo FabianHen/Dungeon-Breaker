@@ -211,5 +211,6 @@ public final class ItemRegistry {
   public static void clearMapsForTests() {
     ITEMS.clear();
     FACTORIES.clear();
+    Item.ensureRegistryInitialized();
   }
 }
