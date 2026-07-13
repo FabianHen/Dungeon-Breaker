@@ -29,6 +29,7 @@ public class HealthSystemTest {
   private MockHealthSystem system;
   private Entity entity;
 
+  /** setup */
   @BeforeEach
   public void setUp() {
     game = new FakeGame();
