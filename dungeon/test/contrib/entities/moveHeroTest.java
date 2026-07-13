@@ -120,7 +120,7 @@ public class moveHeroTest {
 
     //G4. Bereits vorhandene Bewegungs-Kraft vorhanden
     @Test
-    void moveHero_DirectionUpSpeedOneVelocityComponentContainsDiagonalForce_ForceAppliedToHeroEqualsOfInput(){
+    void moveHero_DirectionUpSpeedOneVelocityComponentContainsDiagonalForce_ForceAppliedToHeroEqualSumOfInput(){
         //arrange
         Direction direction = Direction.UP;
         Vector2 speed = Vector2.ONE;
@@ -132,9 +132,9 @@ public class moveHeroTest {
         HeroController.moveHero(this.mockHero, direction, speed);
         
         //assert
-        Vector2 normalizedForceInX1Y2Dierection = Vector2.of(1.0f/Math.sqrt(5.0f), 2.0f/Math.sqrt(5.0f));
+        Vector2 normalizedForceInX1Y2Direction = Vector2.of(1.0f/Math.sqrt(5.0f), 2.0f/Math.sqrt(5.0f));
         Vector2 appliedForceAfterMovement = this.getAppliedForceFromVelocityComponentOfHeroAfterMovement();
-        assertTrue(this.compareVector2(appliedForceAfterMovement, normalizedForceInX1Y2Dierection), "force applied to hero is not the sum of directions");
+        assertTrue(this.compareVector2(appliedForceAfterMovement, normalizedForceInX1Y2Direction), "force applied to hero is not the sum of directions");
     }
 
     //G5. Bewegung entlang einer einzelnen Achse
@@ -176,7 +176,7 @@ public class moveHeroTest {
 
     //U1. Steuerung des Helden deaktiviert
     @Test
-    void moveHero_InputComponentDiactivateControls_FunctionEndsWithoutReturnValue(){
+    void moveHero_InputComponentDeactivateControls_FunctionEndsWithoutReturnValue(){
         //arrange
         Direction direction = Direction.UP;
         Vector2 speed = Vector2.ONE;
@@ -227,7 +227,7 @@ public class moveHeroTest {
 
     //U4. Geschwindigkeit ergibt Nullkraft
     @Test
-    void moveHero_DirectionAndSpeedFormZeroVektorNoForcesInVelocityComponent_VelocityComponentRemainEmpty(){
+    void moveHero_DirectionAndSpeedFormZeroVectorNoForcesInVelocityComponent_VelocityComponentRemainsEmpty(){
         //arrange
         Direction direction = Direction.UP;
         Vector2 speed = Vector2.ZERO;
@@ -244,7 +244,7 @@ public class moveHeroTest {
     //U5. Vorhandene Kraft und neue Kraft heben sich gegenseitig auf
     //Beim Testen ist aufgefallen dass dem nicht so ist. Die vorhandene Kraft bleibt erhalten.
     @Test
-    void moveHero_DirectionUpSpeedOneVelocityComponentContainsDirectinDown_NOChangesInVelocityComponent(){
+    void moveHero_DirectionUpSpeedOneVelocityComponentContainsDirectionDown_NOChangesInVelocityComponent(){
         //arrange
         Direction direction = Direction.UP;
         Vector2 speed = Vector2.ONE;
