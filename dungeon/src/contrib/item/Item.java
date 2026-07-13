@@ -474,7 +474,8 @@ public class Item {
    * @return True if the item matches the input, false otherwise.
    */
   public boolean match(final Item input) {
-    if (this.getClass().isInstance(input)) return input.stackSize() <= stackSize;
+    if (input != null && this.getClass().equals(input.getClass()))
+      return input.stackSize() <= stackSize;
     return false;
   }
 
