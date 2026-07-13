@@ -344,13 +344,7 @@ public class HealthSystemTest {
     assertThrows(NullPointerException.class, () -> system.triggerOnDeathPublic(null));
   }
 
-
-
-
-  /**
-   * G1:
-   * Observer wird erfolgreich registriert.
-   */
+  /** G1: Observer wird erfolgreich registriert. */
   @Test
   void registerObserverAddsObserver() {
     FakeHealthObserver observer = new FakeHealthObserver();
@@ -361,10 +355,7 @@ public class HealthSystemTest {
     assertEquals(1, system.observers.size());
   }
 
-  /**
-   * G2:
-   * Registrierter Observer wird entfernt.
-   */
+  /** G2: Registrierter Observer wird entfernt. */
   @Test
   void removeObserverRemovesRegisteredObserver() {
     FakeHealthObserver observer = new FakeHealthObserver();
@@ -376,10 +367,7 @@ public class HealthSystemTest {
     assertTrue(system.observers.isEmpty());
   }
 
-  /**
-   * G3:
-   * Entfernte Observer erhalten keine Benachrichtigungen mehr.
-   */
+  /** G3: Entfernte Observer erhalten keine Benachrichtigungen mehr. */
   @Test
   void removedObserverReceivesNoHealthEvents() {
     FakeHealthObserver observer = new FakeHealthObserver();
@@ -393,8 +381,7 @@ public class HealthSystemTest {
 
     DrawComponent dc = mock(DrawComponent.class);
 
-    HealthSystem.HSData data =
-      new HealthSystem.HSData(entity, hc, dc);
+    HealthSystem.HSData data = new HealthSystem.HSData(entity, hc, dc);
 
     system.applyDamagePublic(data);
 
@@ -403,10 +390,7 @@ public class HealthSystemTest {
     assertNull(observer.lastData());
   }
 
-  /**
-   * U1:
-   * Registrierung eines Null-Observers.
-   */
+  /** U1: Registrierung eines Null-Observers. */
   @Test
   void registerNullObserver() {
 
@@ -416,10 +400,7 @@ public class HealthSystemTest {
     assertEquals(1, system.observers.size());
   }
 
-  /**
-   * U2:
-   * Entfernen eines nicht registrierten Observers verändert die Liste nicht.
-   */
+  /** U2: Entfernen eines nicht registrierten Observers verändert die Liste nicht. */
   @Test
   void removeObserverThatIsNotRegisteredDoesNothing() {
     FakeHealthObserver observer = new FakeHealthObserver();
@@ -427,13 +408,7 @@ public class HealthSystemTest {
     system.registerObserver(observer);
     system.removeObserver(otherObserver);
 
-
     assertEquals(1, system.observers.size());
     assertTrue(system.observers.contains(observer));
   }
-
-
-
-
 }
-
