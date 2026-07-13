@@ -9,9 +9,7 @@ import org.junit.jupiter.api.Test;
 /** Tests für die isDead-Prüfung in der HealthComponent. */
 public class IsDeadTest {
 
-  /**
-   * G1: Positive Lebenspunkte.
-   */
+  /** G1: Positive Lebenspunkte. */
   @Test
   public void testIsDeadG1_PositiveHealth_ReturnsFalse() {
     // Arrange
@@ -25,9 +23,7 @@ public class IsDeadTest {
     assertFalse(dead, "Bei positiven Lebenspunkten (50) sollte die Entity nicht tot sein.");
   }
 
-  /**
-   * G2: Lebenspunkte gleich 0.
-   */
+  /** G2: Lebenspunkte gleich 0. */
   @Test
   public void testIsDeadG2_ZeroHealth_ReturnsTrue() {
     // Arrange
@@ -41,9 +37,7 @@ public class IsDeadTest {
     assertTrue(dead, "Bei exakt 0 Lebenspunkten sollte die Entity als tot gelten.");
   }
 
-  /**
-   * G3: Negative Lebenspunkte.
-   */
+  /** G3: Negative Lebenspunkte. */
   @Test
   public void testIsDeadG3_NegativeHealth_ReturnsTrue() {
     // Arrange
