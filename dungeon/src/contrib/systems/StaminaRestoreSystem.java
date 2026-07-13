@@ -1,7 +1,8 @@
 package contrib.systems;
 
+import contrib.DefaultGameProvider;
+import contrib.GameProvider;
 import contrib.components.StaminaComponent;
-import core.Game;
 import core.System;
 
 /**
@@ -12,14 +13,23 @@ import core.System;
  * value is divided by the current game frame rate.
  */
 public class StaminaRestoreSystem extends System {
+  private final GameProvider game;
+
+  /** Creates a new {@code StaminaRestoreSystem} with a DefaultGameProvider. */
+  public StaminaRestoreSystem() {
+    this(new DefaultGameProvider());
+  }
 
   /**
-   * Creates a new {@code EnergyRestoreSystem}.
+   * Creates a new {@code StaminaRestoreSystem} with the given GameProvider.
    *
    * <p>This system processes all entities that contain an {@link StaminaComponent}.
+   *
+   * @param game The game provider to be used.
    */
-  public StaminaRestoreSystem() {
+  public StaminaRestoreSystem(GameProvider game) {
     super(StaminaComponent.class);
+    this.game = game;
   }
 
   /**
@@ -37,6 +47,6 @@ public class StaminaRestoreSystem extends System {
   public void execute() {
     filteredEntityStream()
         .flatMap(e -> e.fetch(StaminaComponent.class).stream())
-        .forEach(c -> c.restore(c.restorePerSecond() / Game.frameRate()));
+        .forEach(c -> c.restore(c.restorePerSecond() / game.frameRate()));
   }
 }

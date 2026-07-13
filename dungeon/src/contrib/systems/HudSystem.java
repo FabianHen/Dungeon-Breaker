@@ -2,10 +2,11 @@ package contrib.systems;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import contrib.DefaultGameProvider;
+import contrib.GameProvider;
 import contrib.components.UIComponent;
 import contrib.hud.UIUtils;
 import core.Entity;
-import core.Game;
 import core.System;
 import core.components.PlayerComponent;
 import core.game.PreRunConfiguration;
@@ -40,9 +41,21 @@ public final class HudSystem extends System {
 
   private final Map<Entity, UIComponent> entityUIComponentMap = new HashMap<>();
 
-  /** Create a new HudSystem. */
+  private final GameProvider game;
+
+  /** Creates a new HudSystem with a DefaultGameProvider. */
   public HudSystem() {
+    this(new DefaultGameProvider());
+  }
+
+  /**
+   * Creates a new HudSystem with the given GameProvider.
+   *
+   * @param game The game provider to be used.
+   */
+  public HudSystem(GameProvider game) {
     super(AuthoritativeSide.BOTH, UIComponent.class);
+    this.game = game;
     onEntityAdd = this::addListener;
     onEntityRemove = this::removeListener;
   }
@@ -50,7 +63,7 @@ public final class HudSystem extends System {
   /**
    * Returns the topmost closeable UI.
    *
-   * @return a Tuple of the Entity and its UIComponent
+   * @return a Tuple of the Entity and its UIComponent.
    */
   public Optional<Tuple<Entity, UIComponent>> topmostCloseableUI() {
     return entityUIComponentMap.entrySet().stream()
@@ -62,8 +75,8 @@ public final class HudSystem extends System {
   /**
    * Returns whether there is any open pausing UI for a given entity.
    *
-   * @param entity the entity to check for
-   * @return true if there is an open pausing UI for the entity, false otherwise
+   * @param entity the entity to check for.
+   * @return true if there is an open pausing UI for the entity, false otherwise.
    */
   public boolean hasOpenPausingUI(Entity entity) {
     return entityUIComponentMap.values().stream()
@@ -91,7 +104,7 @@ public final class HudSystem extends System {
 
     if (targets.length == 0) {
       // if no specific targets, decrease for all players
-      Game.allPlayers()
+      game.allPlayers()
           .forEach(
               playerEntity -> {
                 playerEntity
@@ -100,7 +113,7 @@ public final class HudSystem extends System {
               });
     } else {
       for (Integer targetId : targets) {
-        Optional<Entity> target = Game.findEntityById(targetId);
+        Optional<Entity> target = game.findEntityById(targetId);
         target
             .flatMap(t -> t.fetch(PlayerComponent.class))
             .ifPresent(PlayerComponent::decrementOpenDialogs);
@@ -123,7 +136,7 @@ public final class HudSystem extends System {
     Group dialog = component.dialog();
 
     // check if we should draw it
-    int[] myIds = Game.allPlayers().mapToInt(Entity::id).toArray();
+    int[] myIds = game.allPlayers().mapToInt(Entity::id).toArray();
     int[] targetIds = component.targetEntityIds();
     int[] affectedIds =
         Arrays.stream(myIds)
@@ -137,13 +150,13 @@ public final class HudSystem extends System {
 
     // increase open dialog count for all target entities
     for (Integer targetId : targetIds) {
-      Optional<Entity> target = Game.findEntityById(targetId);
+      Optional<Entity> target = game.findEntityById(targetId);
       target
           .flatMap(t -> t.fetch(PlayerComponent.class))
           .ifPresent(PlayerComponent::incrementOpenDialogs);
     }
 
-    Game.stage()
+    game.stage()
         .ifPresentOrElse(
             stage -> addDialogToStage(dialog, stage),
             () -> sendDialogToClients(entity, component, affectedIds));
@@ -151,7 +164,7 @@ public final class HudSystem extends System {
     addMapping(entity, dialog, component);
     // Multiplayer clients only render dialogs. The server keeps callback ownership and
     // response authorization in DialogTracker.
-    if (!Game.isMultiplayerClient()) {
+    if (!game.isMultiplayerClient()) {
       DialogTracker.instance().registerDialog(component);
     }
   }
@@ -159,12 +172,9 @@ public final class HudSystem extends System {
   /**
    * Sends the dialog to all connected and relevant clients.
    *
-   * <p>A dialog is relevant for a client, if the targetEntityIds of the UIComponent contains the id
-   * of an entity controlled by the client or if targetEntityIds is empty (meaning all clients).
-   *
-   * @param entity the entity which owns the UIComponent
-   * @param component the UIComponent to send
-   * @param targetIds all clients that are connect and should receive the dialog
+   * @param entity the entity which owns the UIComponent.
+   * @param component the UIComponent to send.
+   * @param targetIds all clients that are connect and should receive the dialog.
    */
   private void sendDialogToClients(
       final Entity entity, final UIComponent component, int[] targetIds) {
@@ -181,7 +191,7 @@ public final class HudSystem extends System {
     DialogShowMessage msg =
         new DialogShowMessage(component.dialogContext(), component.canBeClosed());
     for (short clientId : clientIds) {
-      Game.network().send(clientId, msg, true);
+      game.network().send(clientId, msg, true);
     }
   }
 
@@ -231,7 +241,7 @@ public final class HudSystem extends System {
     LOGGER.info("Pausing game due to open UI");
     ipaused = true;
     if (PreRunConfiguration.multiplayerEnabled()) return; // don't pause in multiplayer mode
-    Game.systems().values().forEach(System::stop);
+    game.systems().values().forEach(System::stop);
   }
 
   private void unpauseGame() {
@@ -240,7 +250,7 @@ public final class HudSystem extends System {
       ipaused = false;
       return; // don't pause in multiplayer mode
     }
-    if (ipaused) Game.systems().values().forEach(System::run);
+    if (ipaused) game.systems().values().forEach(System::run);
     ipaused = false;
   }
 

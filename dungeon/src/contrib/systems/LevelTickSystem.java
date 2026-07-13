@@ -1,7 +1,8 @@
 package contrib.systems;
 
+import contrib.DefaultGameProvider;
+import contrib.GameProvider;
 import contrib.utils.level.ITickable;
-import core.Game;
 import core.System;
 import core.level.elements.ILevel;
 
@@ -14,10 +15,21 @@ import core.level.elements.ILevel;
  * @see core.level.DungeonLevel DungeonLevel
  */
 public class LevelTickSystem extends System {
+  private final GameProvider game;
 
-  /** Creates a new LevelTickSystem. */
+  /** Creates a new LevelTickSystem with a DefaultGameProvider. */
   public LevelTickSystem() {
+    this(new DefaultGameProvider());
+  }
+
+  /**
+   * Creates a new LevelTickSystem with the given GameProvider.
+   *
+   * @param game The game provider to be used.
+   */
+  public LevelTickSystem(GameProvider game) {
     super(AuthoritativeSide.BOTH);
+    this.game = game;
   }
 
   /** The current level of the game. */
@@ -25,11 +37,11 @@ public class LevelTickSystem extends System {
 
   @Override
   public void execute() {
-    if (Game.currentLevel().orElse(null) instanceof ITickable tickable) {
-      tickable.onTick(currentLevel != Game.currentLevel().orElse(null));
+    if (game.currentLevel().orElse(null) instanceof ITickable tickable) {
+      tickable.onTick(currentLevel != game.currentLevel().orElse(null));
     }
-    if (currentLevel != Game.currentLevel().orElse(null)) {
-      this.currentLevel = Game.currentLevel().orElse(null);
+    if (currentLevel != game.currentLevel().orElse(null)) {
+      this.currentLevel = game.currentLevel().orElse(null);
     }
   }
 
