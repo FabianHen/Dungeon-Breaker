@@ -16,9 +16,9 @@ import contrib.utils.components.health.DamageType;
 import contrib.utils.components.health.FakeHealthObserver;
 import core.Entity;
 import core.FakeGame;
-import core.utils.Direction;
 import core.components.DrawComponent;
 import core.components.PositionComponent;
+import core.utils.Direction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -423,14 +423,14 @@ public class HealthSystemTest {
   }
 
   /**
-   * G1:
-   * Verifies that an entity with a {@link PositionComponent} triggers the
-   * death animation including its current view direction.
+   * G1: Verifies that an entity with a {@link PositionComponent} triggers the death animation
+   * including its current view direction.
    *
    * <p>Expected:
+   *
    * <ul>
-   *     <li>The death signal is sent exactly once.</li>
-   *     <li>The current view direction is passed to the DrawComponent.</li>
+   *   <li>The death signal is sent exactly once.
+   *   <li>The current view direction is passed to the DrawComponent.
    * </ul>
    */
   @Test
@@ -447,24 +447,23 @@ public class HealthSystemTest {
 
     HealthComponent healthComponent = new HealthComponent(100);
 
-    HealthSystem.HSData data =
-      new HealthSystem.HSData(entity, healthComponent, drawComponent);
+    HealthSystem.HSData data = new HealthSystem.HSData(entity, healthComponent, drawComponent);
 
     system.activateDeathAnimationPublic(data);
 
     Mockito.verify(drawComponent, Mockito.times(1))
-      .sendSignal(HealthSystem.DEATH_SIGNAL, Direction.UP);
+        .sendSignal(HealthSystem.DEATH_SIGNAL, Direction.UP);
   }
 
   /**
-   * G2:
-   * Verifies that an entity without a {@link PositionComponent}
-   * still triggers the death animation.
+   * G2: Verifies that an entity without a {@link PositionComponent} still triggers the death
+   * animation.
    *
    * <p>Expected:
+   *
    * <ul>
-   *     <li>The death signal is sent exactly once.</li>
-   *     <li>No direction is passed to the DrawComponent.</li>
+   *   <li>The death signal is sent exactly once.
+   *   <li>No direction is passed to the DrawComponent.
    * </ul>
    */
   @Test
@@ -476,27 +475,25 @@ public class HealthSystemTest {
 
     HealthComponent healthComponent = new HealthComponent(100);
 
-    HealthSystem.HSData data =
-      new HealthSystem.HSData(entity, healthComponent, drawComponent);
+    HealthSystem.HSData data = new HealthSystem.HSData(entity, healthComponent, drawComponent);
 
     system.activateDeathAnimationPublic(data);
 
-    Mockito.verify(drawComponent, Mockito.times(1))
-      .sendSignal(HealthSystem.DEATH_SIGNAL);
+    Mockito.verify(drawComponent, Mockito.times(1)).sendSignal(HealthSystem.DEATH_SIGNAL);
 
     Mockito.verify(drawComponent, Mockito.never())
-      .sendSignal(Mockito.eq(HealthSystem.DEATH_SIGNAL), Mockito.any());
+        .sendSignal(Mockito.eq(HealthSystem.DEATH_SIGNAL), Mockito.any());
   }
 
   /**
-   * U1:
-   * Verifies that a {@link NullPointerException} is thrown if the
-   * {@link DrawComponent} is missing.
+   * U1: Verifies that a {@link NullPointerException} is thrown if the {@link DrawComponent} is
+   * missing.
    *
    * <p>Expected:
+   *
    * <ul>
-   *     <li>The method cannot send the death signal.</li>
-   *     <li>A {@link NullPointerException} is thrown.</li>
+   *   <li>The method cannot send the death signal.
+   *   <li>A {@link NullPointerException} is thrown.
    * </ul>
    */
   @Test
@@ -506,33 +503,23 @@ public class HealthSystemTest {
 
     HealthComponent healthComponent = new HealthComponent(100);
 
-    HealthSystem.HSData data =
-      new HealthSystem.HSData(entity, healthComponent, null);
+    HealthSystem.HSData data = new HealthSystem.HSData(entity, healthComponent, null);
 
-    assertThrows(
-      NullPointerException.class,
-      () -> system.activateDeathAnimationPublic(data));
+    assertThrows(NullPointerException.class, () -> system.activateDeathAnimationPublic(data));
   }
 
   /**
-   * U2:
-   * Verifies that passing {@code null} as HSData causes a
-   * {@link NullPointerException}.
+   * U2: Verifies that passing {@code null} as HSData causes a {@link NullPointerException}.
    *
    * <p>Expected:
+   *
    * <ul>
-   *     <li>The method throws a {@link NullPointerException}.</li>
+   *   <li>The method throws a {@link NullPointerException}.
    * </ul>
    */
   @Test
   void activateDeathAnimationWithNullHSDataThrowsException() {
 
-    assertThrows(
-      NullPointerException.class,
-      () -> system.activateDeathAnimationPublic(null));
+    assertThrows(NullPointerException.class, () -> system.activateDeathAnimationPublic(null));
   }
 }
-
-
-
-
