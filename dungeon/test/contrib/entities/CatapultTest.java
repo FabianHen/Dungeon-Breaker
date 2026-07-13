@@ -12,7 +12,6 @@ import core.components.DrawComponent;
 import core.components.PositionComponent;
 import core.components.VelocityComponent;
 import core.utils.Point;
-import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -20,43 +19,6 @@ import org.junit.jupiter.api.Test;
  * Zugehörige Issue-Nummer: #140 / #29
  */
 public class CatapultTest {
-
-  /** Stub-Klasse für CatapultableComponent, um den Zustand während der Tests zu überwachen. */
-  private static class CatapultableStub extends CatapultableComponent {
-    private boolean isFlying = false;
-    private boolean deactivatedCalled = false;
-    private boolean fliesCalled = false;
-
-    public CatapultableStub(Consumer<Entity> deactivate, Consumer<Entity> reactivate) {
-      super(deactivate, reactivate);
-    }
-
-    @Override
-    public boolean isFlying() {
-      return this.isFlying;
-    }
-
-    @Override
-    public void flies() {
-      this.isFlying = true;
-      this.fliesCalled = true;
-    }
-
-    @Override
-    public void lands() {
-      this.isFlying = false;
-    }
-
-    @Override
-    public Consumer<Entity> deactivate() {
-      return entity -> this.deactivatedCalled = true;
-    }
-
-    @Override
-    public Consumer<Entity> reactivate() {
-      return entity -> {};
-    }
-  }
 
   /**
    * Hilfsmethode, um die in MiscFactory.catapult definierte Kollisionslogik direkt auszuführen.
@@ -119,13 +81,14 @@ public class CatapultTest {
 
     Entity other = new Entity();
     other.add(new PositionComponent(spawn));
-    CatapultableStub catapultable = new CatapultableStub(entity -> {}, entity -> {});
+
+    // Wir nutzen die originale Komponente und füttern sie mit funktionalen Lambdas
+    CatapultableComponent catapultable = new CatapultableComponent(entity -> {}, entity -> {});
     other.add(catapultable);
 
     simulateCatapultCollision(catapult, other, spawn, target, 5.0f);
 
-    assertTrue(catapultable.isFlying());
-    assertTrue(catapultable.fliesCalled);
+    assertTrue(catapultable.isFlying(), "Das Entity sollte nach der Kollision fliegen.");
   }
 
   /** Äquivalenzklasse: G3. Kollision mit CatapultableComponent und VelocityComponent. */
@@ -137,7 +100,7 @@ public class CatapultTest {
 
     Entity other = new Entity();
     other.add(new PositionComponent(spawn));
-    CatapultableStub catapultable = new CatapultableStub(entity -> {}, entity -> {});
+    CatapultableComponent catapultable = new CatapultableComponent(entity -> {}, entity -> {});
     other.add(catapultable);
 
     VelocityComponent vc = new VelocityComponent(3.0f, 1.0f, entity -> {}, false);
@@ -145,7 +108,7 @@ public class CatapultTest {
 
     simulateCatapultCollision(catapult, other, spawn, target, 5.0f);
 
-    assertTrue(catapultable.isFlying());
+    assertTrue(catapultable.isFlying(), "Das Entity sollte fliegen.");
   }
 
   /** Äquivalenzklasse: G4. Kollision mit CatapultableComponent ohne VelocityComponent. */
@@ -157,12 +120,12 @@ public class CatapultTest {
 
     Entity other = new Entity();
     other.add(new PositionComponent(spawn));
-    CatapultableStub catapultable = new CatapultableStub(entity -> {}, entity -> {});
+    CatapultableComponent catapultable = new CatapultableComponent(entity -> {}, entity -> {});
     other.add(catapultable);
 
     simulateCatapultCollision(catapult, other, spawn, target, 5.0f);
 
-    assertTrue(catapultable.isFlying());
+    assertTrue(catapultable.isFlying(), "Das Entity sollte fliegen.");
   }
 
   /** Äquivalenzklasse: G5. Deaktivierungslogik wird ausgeführt. */
@@ -174,13 +137,16 @@ public class CatapultTest {
 
     Entity other = new Entity();
     other.add(new PositionComponent(spawn));
-    CatapultableStub catapultable = new CatapultableStub(entity -> {}, entity -> {});
+
+    final boolean[] deactivatedCalled = {false};
+    CatapultableComponent catapultable =
+        new CatapultableComponent(entity -> deactivatedCalled[0] = true, entity -> {});
     other.add(catapultable);
 
     simulateCatapultCollision(catapult, other, spawn, target, 5.0f);
 
     assertTrue(
-        catapultable.deactivatedCalled,
+        deactivatedCalled[0],
         "Der deactivate-Callback auf der CatapultableComponent wurde nicht aufgerufen.");
   }
 
@@ -193,12 +159,12 @@ public class CatapultTest {
 
     Entity other1 = new Entity();
     other1.add(new PositionComponent(spawn));
-    CatapultableStub catapultable1 = new CatapultableStub(entity -> {}, entity -> {});
+    CatapultableComponent catapultable1 = new CatapultableComponent(entity -> {}, entity -> {});
     other1.add(catapultable1);
 
     Entity other2 = new Entity();
     other2.add(new PositionComponent(spawn));
-    CatapultableStub catapultable2 = new CatapultableStub(entity -> {}, entity -> {});
+    CatapultableComponent catapultable2 = new CatapultableComponent(entity -> {}, entity -> {});
     other2.add(catapultable2);
 
     simulateCatapultCollision(catapult, other1, spawn, target, 5.0f);
@@ -225,7 +191,7 @@ public class CatapultTest {
       Entity catapult = MiscFactory.catapult(new Point(0, 0), null, 5.0f);
       Entity other = new Entity();
       other.add(new PositionComponent(new Point(0, 0)));
-      other.add(new CatapultableStub(entity -> {}, entity -> {}));
+      other.add(new CatapultableComponent(entity -> {}, entity -> {}));
 
       simulateCatapultCollision(catapult, other, new Point(0, 0), null, 5.0f);
     } catch (Throwable t) {
@@ -273,14 +239,24 @@ public class CatapultTest {
 
     Entity other = new Entity();
     other.add(new PositionComponent(spawn));
-    CatapultableStub catapultable = new CatapultableStub(entity -> {}, entity -> {});
-    catapultable.isFlying = true; // Bereits im Flug
+    CatapultableComponent catapultable = new CatapultableComponent(entity -> {}, entity -> {});
+    catapultable.flies(); // Bereits in den Flugzustand versetzen
     other.add(catapultable);
 
-    simulateCatapultCollision(catapult, other, spawn, target, 5.0f);
+    // Wir merken uns, ob deactivate aufgerufen wird
+    final boolean[] deactivatedCalledOnFlying = {false};
+    CatapultableComponent spyCatapultable =
+        new CatapultableComponent(entity -> deactivatedCalledOnFlying[0] = true, entity -> {});
+    spyCatapultable.flies();
+
+    Entity otherSpy = new Entity();
+    otherSpy.add(new PositionComponent(spawn));
+    otherSpy.add(spyCatapultable);
+
+    simulateCatapultCollision(catapult, otherSpy, spawn, target, 5.0f);
 
     assertFalse(
-        catapultable.fliesCalled,
+        deactivatedCalledOnFlying[0],
         "Wenn das Entity bereits fliegt, darf kein neuer Katapult-Trigger ausgelöst werden.");
   }
 }
