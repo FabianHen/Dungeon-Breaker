@@ -79,4 +79,17 @@ public class MockHealthSystem extends HealthSystem {
         .filter(hsd -> !hsd.hc().alreadyDead())
         .forEach(this::triggerOnDeathPublic);
   }
+
+  /**
+   * Exposes the protected activateDeathAnimation() method for testing.
+   *
+   * @param data HSData to process.
+   * @return processed HSData
+   */
+  public HSData activateDeathAnimationPublic(HSData data) {
+    return super.activateDeathAnimation(data);
+  }
+
 }
+
+
