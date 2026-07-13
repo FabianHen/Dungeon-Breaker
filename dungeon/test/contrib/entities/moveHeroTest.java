@@ -33,16 +33,26 @@ public class moveHeroTest {
     private Map<Integer, InputData> mockKeyBindings;
     private InputComponent mockInputComponent;
 
-    //helper funktion to compare two vertor2 classes. there is no equals methode in that class
+    //helper funktion to compare two vectors of Vector2 class. there is no equals methode in Vector2 class
     private boolean compareVector2(Vector2 a, Vector2 b){
         return (a != null && b != null && (a.x() == b.x()) && (a.y() == b.y()));
+    }
+
+    //helper funktion to set applied force of hero. there is no setPositoin methode to set parameter for movement
+    private void setAppliedForceOfVelocityComponentOfHeroBeforeMovement(Vector2 forceToApply){
+        this.mockVelocityComponent.applyForce(HeroController.MOVEMENT_ID, forceToApply);
+    }
+
+    //helper funktion to get applierd force of hero. there is no getPosition methode to get information from movement
+    private Vector2 getAppliedForceFromVelocityComponentOfHeroAfterMovement(){
+        Map<String, Vector2> forces = this.mockVelocityComponent.appliedForces();
+        Vector2 forceOfInterest = forces.get(HeroController.MOVEMENT_ID);
+        return forceOfInterest;
     }
     
     @BeforeEach
     void setUp() {
         this.mockHero = mock(Entity.class);
-
-        //TODO
         
         this.mockVelocityComponent = new VelocityComponent();
 
@@ -55,7 +65,8 @@ public class moveHeroTest {
         //arrange
         Direction direction = Direction.UP;
         Vector2 speed = Vector2.ONE;
-        this.mockVelocityComponent.applyForce(HeroController.MOVEMENT_ID, Vector2.ZERO);
+        Vector2 forceOfNoMovement = Vector2.ZERO;
+        this.setAppliedForceOfVelocityComponentOfHeroBeforeMovement(forceOfNoMovement);
         when(this.mockHero.isPresent(InputComponent.class)).thenReturn(false);
         when(this.mockHero.fetch(VelocityComponent.class)).thenReturn(Optional.of(this.mockVelocityComponent));
 
@@ -63,9 +74,8 @@ public class moveHeroTest {
         HeroController.moveHero(this.mockHero, direction, speed);
 
         //assert
-        Map<String, Vector2> forces = this.mockVelocityComponent.appliedForces();
-        Vector2 forceOfInterest = forces.get(HeroController.MOVEMENT_ID);
-        assertTrue(this.compareVector2(forceOfInterest, direction), "dierection of the hero is not equals directiun up");
+        Vector2 appliedForceAfterMovement = this.getAppliedForceFromVelocityComponentOfHeroAfterMovement();
+        assertTrue(this.compareVector2(appliedForceAfterMovement, direction), "dierection of the hero is not equals directiun up");
     }
 
     //G2. InputComponent vorhanden, Steuerung aktiviert, Bewegungsrichtung erlaubt
@@ -74,9 +84,10 @@ public class moveHeroTest {
         //arrange
         Direction direction = Direction.UP;
         Vector2 speed = Vector2.ONE;
+        Vector2 forceOfNoMovement = Vector2.ZERO;
         this.mockKeyBindings = new HashMap<>();
         this.mockKeyBindings.put(KeyboardConfig.MOVEMENT_UP.value(), null);
-        this.mockVelocityComponent.applyForce(HeroController.MOVEMENT_ID, Vector2.ZERO);
+        this.setAppliedForceOfVelocityComponentOfHeroBeforeMovement(forceOfNoMovement);
         when(this.mockHero.fetch(InputComponent.class)).thenReturn(Optional.of(this.mockInputComponent));
         when(this.mockInputComponent.deactivateControls()).thenReturn(false);
         when(this.mockHero.isPresent(InputComponent.class)).thenReturn(true);
@@ -87,9 +98,8 @@ public class moveHeroTest {
         HeroController.moveHero(this.mockHero, direction, speed);
 
         //assert
-        Map<String, Vector2> forces = this.mockVelocityComponent.appliedForces();
-        Vector2 forceOfInterest = forces.get(HeroController.MOVEMENT_ID);
-        assertTrue(this.compareVector2(forceOfInterest, direction), "dierection of the hero is not equals directiun up");  
+        Vector2 appliedForceAfterMovement = this.getAppliedForceFromVelocityComponentOfHeroAfterMovement();
+        assertTrue(this.compareVector2(appliedForceAfterMovement, direction), "dierection of the hero is not equals directiun up");  
     }
 
     //G3. Keine bestehende Bewegungs-Kraft vorhanden
@@ -104,9 +114,8 @@ public class moveHeroTest {
         HeroController.moveHero(this.mockHero, direction, speed);
 
         //assert
-        Map<String, Vector2> forces = this.mockVelocityComponent.appliedForces();
-        Vector2 forceOfInterest = forces.get(HeroController.MOVEMENT_ID);
-        assertTrue(this.compareVector2(forceOfInterest, direction), "TODO");  
+        Vector2 appliedForceAfterMovement = this.getAppliedForceFromVelocityComponentOfHeroAfterMovement();
+        assertTrue(this.compareVector2(appliedForceAfterMovement, direction), "TODO");  
     }
 
     //G4. Bereits vorhandene Bewegungs-Kraft vorhanden
@@ -115,17 +124,17 @@ public class moveHeroTest {
         //arrange
         Direction direction = Direction.UP;
         Vector2 speed = Vector2.ONE;
-        this.mockVelocityComponent.applyForce(HeroController.MOVEMENT_ID, Vector2.of(1.0f, 1.0f));
+        Vector2 forceInX1Y1Diagonal = Vector2.of(1.0f, 1.0f);
+        this.setAppliedForceOfVelocityComponentOfHeroBeforeMovement(forceInX1Y1Diagonal);
         when(this.mockHero.fetch(VelocityComponent.class)).thenReturn(Optional.of(this.mockVelocityComponent));
 
         //act
         HeroController.moveHero(this.mockHero, direction, speed);
         
         //assert
-        Vector2 normalizedVector = Vector2.of(1.0f/Math.sqrt(5.0f), 2.0f/Math.sqrt(5.0f));
-        Map<String, Vector2> forces = this.mockVelocityComponent.appliedForces();
-        Vector2 forceOfInterest = forces.get(HeroController.MOVEMENT_ID);
-        assertTrue(this.compareVector2(forceOfInterest, normalizedVector), "TODO");
+        Vector2 normalizedForceInX1Y2Dierection = Vector2.of(1.0f/Math.sqrt(5.0f), 2.0f/Math.sqrt(5.0f));
+        Vector2 appliedForceAfterMovement = this.getAppliedForceFromVelocityComponentOfHeroAfterMovement();
+        assertTrue(this.compareVector2(appliedForceAfterMovement, normalizedForceInX1Y2Dierection), "TODO");
     }
 
     //G5. Bewegung entlang einer einzelnen Achse
@@ -134,16 +143,16 @@ public class moveHeroTest {
         //arrange
         Direction direction = Direction.UP;
         Vector2 speed = Vector2.ONE;
-        this.mockVelocityComponent.applyForce(HeroController.MOVEMENT_ID, Vector2.of(0.0f, 1.0f));
+        Vector2 forceInX0Y1Direction = Vector2.of(0.0f, 1.0f);
+        this.setAppliedForceOfVelocityComponentOfHeroBeforeMovement(forceInX0Y1Direction);
         when(this.mockHero.fetch(VelocityComponent.class)).thenReturn(Optional.of(this.mockVelocityComponent));
 
         //act
         HeroController.moveHero(this.mockHero, direction, speed);
 
         //assert
-        Map<String, Vector2> forces = this.mockVelocityComponent.appliedForces();
-        Vector2 forceOfInterest = forces.get(HeroController.MOVEMENT_ID);
-        assertTrue(this.compareVector2(forceOfInterest, Vector2.of(0.0f, 1.0f)), "dierection of the hero is not equals directiun up");
+        Vector2 appliedForceAfterMovement = this.getAppliedForceFromVelocityComponentOfHeroAfterMovement();
+        assertTrue(this.compareVector2(appliedForceAfterMovement, forceInX0Y1Direction), "dierection of the hero is not equals directiun up");
     }
 
     //G6. Vorhandene Kraft und neue Kraft ergeben eine diagonale Bewegung
@@ -152,7 +161,8 @@ public class moveHeroTest {
         //arrange
         Direction direction = Direction.UP;
         Vector2 speed = Vector2.ONE;
-        this.mockVelocityComponent.applyForce(HeroController.MOVEMENT_ID, Vector2.of(1.0f, 0.0f));
+        Vector2 forceInX1Y0Direction = Vector2.of(1.0f, 0.0f);
+        this.setAppliedForceOfVelocityComponentOfHeroBeforeMovement(forceInX1Y0Direction);
         when(this.mockHero.fetch(VelocityComponent.class)).thenReturn(Optional.of(this.mockVelocityComponent));
 
         //act
@@ -160,9 +170,8 @@ public class moveHeroTest {
 
         //assert
         Vector2 normalizedDiagonal = Vector2.of(1.0f/Math.sqrt(2.0f), 1.0f/Math.sqrt(2.0f));
-        Map<String, Vector2> forces = this.mockVelocityComponent.appliedForces();
-        Vector2 forceOfInterest = forces.get(HeroController.MOVEMENT_ID);
-        assertTrue(this.compareVector2(forceOfInterest, normalizedDiagonal), "TODO");
+        Vector2 appliedForceAfterMovement = this.getAppliedForceFromVelocityComponentOfHeroAfterMovement();
+        assertTrue(this.compareVector2(appliedForceAfterMovement, normalizedDiagonal), "TODO");
     }
 
     //U1. Steuerung des Helden deaktiviert
@@ -228,9 +237,8 @@ public class moveHeroTest {
         HeroController.moveHero(this.mockHero, direction, speed);
 
         //assert
-        Map<String, Vector2> forces = this.mockVelocityComponent.appliedForces();
-        Vector2 forceOfInterest = forces.get(HeroController.MOVEMENT_ID);
-        assertNull(forceOfInterest,"TODO");
+        Vector2 appliedForceAfterMovement = this.getAppliedForceFromVelocityComponentOfHeroAfterMovement();
+        assertNull(appliedForceAfterMovement,"TODO");
     }
 
     //U5. Vorhandene Kraft und neue Kraft heben sich gegenseitig auf
@@ -241,16 +249,15 @@ public class moveHeroTest {
         Direction direction = Direction.UP;
         Vector2 speed = Vector2.ONE;
         Vector2 directionDown = Vector2.of(0.0f, -1.0f);
-        this.mockVelocityComponent.applyForce(HeroController.MOVEMENT_ID, directionDown);
+        this.setAppliedForceOfVelocityComponentOfHeroBeforeMovement(directionDown);
         when(this.mockHero.fetch(VelocityComponent.class)).thenReturn(Optional.of(this.mockVelocityComponent));
 
         //act
         HeroController.moveHero(this.mockHero, direction, speed);
         
         //assert
-        Map<String, Vector2> forces = this.mockVelocityComponent.appliedForces();
-        Vector2 forceOfInterest = forces.get(HeroController.MOVEMENT_ID);
-        assertTrue(this.compareVector2(forceOfInterest, directionDown), "TODO");
+        Vector2 appliedForceAfterMovement = this.getAppliedForceFromVelocityComponentOfHeroAfterMovement();
+        assertTrue(this.compareVector2(appliedForceAfterMovement, directionDown), "TODO");
     }
 
     //U6. Hero nicht vorhanden
