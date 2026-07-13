@@ -8,8 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import core.utils.components.draw.animation.Animation;
 import java.util.Map;
-
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +18,6 @@ public class ItemRegistryTest {
   void setup() {
     ItemRegistry.clearMapsForTests();
   }
-
 
   /** Tests that looking up an existing item id returns the registered class. */
   @Test
