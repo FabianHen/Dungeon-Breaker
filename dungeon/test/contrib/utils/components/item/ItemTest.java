@@ -184,6 +184,37 @@ public class ItemTest {
     assertEquals(8, item.maxStackSize());
   }
 
+  /** Tests if items of the same type match when the requested stack size is available. */
+  @Test
+  public void testMatchSameTypeAndEnoughStackSize() {
+    Item available = new Item("Test item", "Test description", defaultAnimation);
+    available.stackSize(3);
+    Item requested = new Item("Test item", "Test description", defaultAnimation);
+    requested.stackSize(2);
+
+    assertTrue(available.match(requested));
+  }
+
+  /** Tests if items of different types do not match. */
+  @Test
+  public void testMatchDifferentType() {
+    Item available = new Item("Test item", "Test description", defaultAnimation);
+    Item requested = new TestItemType("Other item", "Other description", defaultAnimation);
+
+    assertFalse(available.match(requested));
+  }
+
+  /** Tests if items do not match when the requested stack size exceeds the available stack. */
+  @Test
+  public void testMatchRequestedStackSizeTooLarge() {
+    Item available = new Item("Test item", "Test description", defaultAnimation);
+    available.stackSize(2);
+    Item requested = new Item("Test item", "Test description", defaultAnimation);
+    requested.stackSize(3);
+
+    assertFalse(available.match(requested));
+  }
+
   /** Tests if item is removed from inventory and present in Game world after drop. */
   @Test
   public void testDrop() {
@@ -264,5 +295,12 @@ public class ItemTest {
     assertTrue(Arrays.asList(inventoryComponent.items()).contains(item));
     item.use(entity);
     assertFalse(Arrays.asList(inventoryComponent.items()).contains(item));
+  }
+
+  private static final class TestItemType extends Item {
+
+    private TestItemType(String displayName, String description, Animation animation) {
+      super(displayName, description, animation);
+    }
   }
 }
