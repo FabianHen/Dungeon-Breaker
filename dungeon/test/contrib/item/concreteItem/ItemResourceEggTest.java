@@ -28,9 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
-/**
- * Tests for {@link ItemResourceEgg}: constructing the egg and using it.
- */
+/** Tests for {@link ItemResourceEgg}: constructing the egg and using it. */
 public class ItemResourceEggTest {
 
   private static final Point USER_POSITION = new Point(2, 2);
@@ -44,23 +42,38 @@ public class ItemResourceEggTest {
         new DungeonLevel(
             new LevelElement[][] {
               new LevelElement[] {
-                LevelElement.FLOOR, LevelElement.FLOOR, LevelElement.FLOOR, LevelElement.FLOOR,
+                LevelElement.FLOOR,
+                LevelElement.FLOOR,
+                LevelElement.FLOOR,
+                LevelElement.FLOOR,
                 LevelElement.FLOOR
               },
               new LevelElement[] {
-                LevelElement.FLOOR, LevelElement.FLOOR, LevelElement.FLOOR, LevelElement.FLOOR,
+                LevelElement.FLOOR,
+                LevelElement.FLOOR,
+                LevelElement.FLOOR,
+                LevelElement.FLOOR,
                 LevelElement.FLOOR
               },
               new LevelElement[] {
-                LevelElement.FLOOR, LevelElement.FLOOR, LevelElement.FLOOR, LevelElement.FLOOR,
+                LevelElement.FLOOR,
+                LevelElement.FLOOR,
+                LevelElement.FLOOR,
+                LevelElement.FLOOR,
                 LevelElement.FLOOR
               },
               new LevelElement[] {
-                LevelElement.FLOOR, LevelElement.FLOOR, LevelElement.FLOOR, LevelElement.FLOOR,
+                LevelElement.FLOOR,
+                LevelElement.FLOOR,
+                LevelElement.FLOOR,
+                LevelElement.FLOOR,
                 LevelElement.FLOOR
               },
               new LevelElement[] {
-                LevelElement.FLOOR, LevelElement.FLOOR, LevelElement.FLOOR, LevelElement.FLOOR,
+                LevelElement.FLOOR,
+                LevelElement.FLOOR,
+                LevelElement.FLOOR,
+                LevelElement.FLOOR,
                 LevelElement.FLOOR
               }
             },
@@ -230,7 +243,8 @@ public class ItemResourceEggTest {
       }
     }
 
-    assertFalse(inventory.hasItem(egg), "the egg should be removed before the position lookup fails");
+    assertFalse(
+        inventory.hasItem(egg), "the egg should be removed before the position lookup fails");
   }
 
   /** use() wraps a monster-creation IOException in a RuntimeException. */
@@ -300,6 +314,7 @@ public class ItemResourceEggTest {
       }
     }
 
-    assertFalse(inventory.hasItem(egg), "the egg should be removed before the monster lookup fails");
+    assertFalse(
+        inventory.hasItem(egg), "the egg should be removed before the monster lookup fails");
   }
 }
