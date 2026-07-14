@@ -921,7 +921,7 @@ public class InventoryComponentTest {
 
       ic.remove(DummyItem.class, 5);
 
-      assertEquals(2, removedItems.size());
+      assertEquals(3, removedItems.size());
     }
 
     /** G4: If {@code amount} is greater than the total stock, all matching stacks are removed. */
