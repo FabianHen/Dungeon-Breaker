@@ -14,23 +14,20 @@ import org.junit.jupiter.api.Test;
 /** Tests für die Konstruktoren der InventoryComponent nach definierten Äquivalenzklassen. */
 public class InventoryComponentConstructorTest {
 
-  /**
-   * G1: Default-Konstruktor erzeugt 24 Slots.
-   */
+  /** G1: Default-Konstruktor erzeugt 24 Slots. */
   @Test
   public void testConstructorG1_Default_Creates24Slots() {
     // Arrange & Act
     InventoryComponent inventory = new InventoryComponent();
 
     // Assert
-    assertEquals(24, inventory.items().length, "Der Default-Konstruktor muss exakt 24 Slots anlegen.");
+    assertEquals(
+        24, inventory.items().length, "Der Default-Konstruktor muss exakt 24 Slots anlegen.");
     assertEquals(0, inventory.count(), "Das Inventar muss initial leer sein (count == 0).");
     assertTrue(inventory.isEmpty(), "isEmpty() muss true zurückgeben.");
   }
 
-  /**
-   * G2: positive Größe.
-   */
+  /** G2: positive Größe. */
   @Test
   public void testConstructorG2_PositiveSize() {
     // Arrange
@@ -40,14 +37,15 @@ public class InventoryComponentConstructorTest {
     InventoryComponent inventory = new InventoryComponent(maxSize);
 
     // Assert
-    assertEquals(maxSize, inventory.items().length, "Das Inventar muss exakt die übergebene Anzahl an Slots anlegen.");
+    assertEquals(
+        maxSize,
+        inventory.items().length,
+        "Das Inventar muss exakt die übergebene Anzahl an Slots anlegen.");
     assertEquals(0, inventory.count(), "Das Inventar muss initial leer sein.");
     assertTrue(inventory.isEmpty(), "isEmpty() muss true zurückgeben.");
   }
 
-  /**
-   * G3: Größe 0.
-   */
+  /** G3: Größe 0. */
   @Test
   public void testConstructorG3_ZeroSize() {
     // Arrange
@@ -64,16 +62,16 @@ public class InventoryComponentConstructorTest {
     assertFalse(itemAdded, "add() muss false zurückgeben, da kein Platz vorhanden ist.");
   }
 
-  /**
-   * U1: negative Größe.
-   */
+  /** U1: negative Größe. */
   @Test
   public void testConstructorU1_NegativeSize_ThrowsException() {
     // Arrange
     int invalidSize = -5;
 
     // Act & Assert
-    assertThrows(NegativeArraySizeException.class, () -> new InventoryComponent(invalidSize),
-      "Eine negative Größe muss eine NegativeArraySizeException auslösen.");
+    assertThrows(
+        NegativeArraySizeException.class,
+        () -> new InventoryComponent(invalidSize),
+        "Eine negative Größe muss eine NegativeArraySizeException auslösen.");
   }
 }
