@@ -13,9 +13,7 @@ import core.utils.components.path.IPath;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests for {@link ItemResourceMushroomRed}: constructing the mushroom and using it.
- */
+/** Tests for {@link ItemResourceMushroomRed}: constructing the mushroom and using it. */
 public class ItemResourceMushroomRedTest {
 
   /** The fixed poison damage dealt on use, mirroring the constant in the item. */
