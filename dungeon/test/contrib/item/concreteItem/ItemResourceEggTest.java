@@ -93,7 +93,12 @@ public class ItemResourceEggTest {
     Game.currentLevel(null);
   }
 
-  /** Builds a user entity with an inventory holding the egg and a valid position. */
+  /**
+   * Builds a user entity with an inventory holding the egg and a valid position.
+   *
+   * @param egg the egg to place in the user's inventory.
+   * @return the prepared user entity.
+   */
   private Entity userWithInventoryAndPosition(ItemResourceEgg egg) {
     Entity user = new Entity();
     InventoryComponent inventory = new InventoryComponent(1);
@@ -103,7 +108,11 @@ public class ItemResourceEggTest {
     return user;
   }
 
-  /** Builds a monster entity that carries a position component. */
+  /**
+   * Builds a monster entity that carries a position component.
+   *
+   * @return the prepared monster entity.
+   */
   private Entity monsterWithPosition() {
     Entity monster = new Entity();
     monster.add(new PositionComponent(new Point(0, 0)));
@@ -182,8 +191,6 @@ public class ItemResourceEggTest {
         "the spawned monster should be added to the game");
   }
 
-  // --- use(): entity without inventory ---
-
   /** use() spawns no monster when the entity has no inventory. */
   @Test
   public void useWithoutInventoryDoesNotSpawnMonster() {
@@ -198,8 +205,6 @@ public class ItemResourceEggTest {
         before, Game.levelEntities().count(), "no monster should be spawned without an inventory");
   }
 
-  // --- use(): null entity ---
-
   /** use() throws a NullPointerException when the entity is null. */
   @Test
   public void useWithNullEntityThrows() {
@@ -207,8 +212,6 @@ public class ItemResourceEggTest {
 
     assertThrows(NullPointerException.class, () -> egg.use(null));
   }
-
-  // --- use(): user without a position component ---
 
   /** use() throws a NoSuchElementException when the user has no position component. */
   @Test
