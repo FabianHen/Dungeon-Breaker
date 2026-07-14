@@ -44,10 +44,10 @@ public class ReceiveHitTest {
     callbackDamage = new AtomicReference<>();
 
     onHitCallback =
-      (entity, damage) -> {
-        callbackEntity.set(entity);
-        callbackDamage.set(damage);
-      };
+        (entity, damage) -> {
+          callbackEntity.set(entity);
+          callbackDamage.set(damage);
+        };
   }
 
   @Test
