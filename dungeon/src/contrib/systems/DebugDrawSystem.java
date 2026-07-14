@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
+import contrib.DefaultGameProvider;
+import contrib.GameProvider;
 import contrib.components.AIComponent;
 import contrib.components.CollideComponent;
 import contrib.components.DecoComponent;
@@ -17,7 +19,6 @@ import contrib.components.InventoryComponent;
 import contrib.modules.interaction.InteractionComponent;
 import contrib.utils.EntityUtils;
 import core.Entity;
-import core.Game;
 import core.System;
 import core.components.DrawComponent;
 import core.components.PlayerComponent;
@@ -65,6 +66,7 @@ import java.util.Optional;
  * boundaries, collider bounds, and view directions of entities.
  */
 public class DebugDrawSystem extends System {
+  private final GameProvider game;
 
   private static final Batch UI_BATCH = new SpriteBatch();
   private static final OrthographicCamera DEBUG_CAM = new OrthographicCamera();
@@ -86,12 +88,22 @@ public class DebugDrawSystem extends System {
   private boolean render = false;
   private boolean renderSystemList = false;
 
-  /** Creates a new DebugDrawSystem. */
+  /** Creates a new DebugDrawSystem with a DefaultGameProvider. */
   public DebugDrawSystem() {
+    this(new DefaultGameProvider());
+  }
+
+  /**
+   * Creates a new DebugDrawSystem with the given GameProvider.
+   *
+   * @param game The game provider to be used.
+   */
+  public DebugDrawSystem(GameProvider game) {
     super(AuthoritativeSide.CLIENT, PositionComponent.class);
-    DEBUG_CAM.setToOrtho(false, Game.windowWidth(), Game.windowHeight());
+    this.game = game;
+    DEBUG_CAM.setToOrtho(false, game.windowWidth(), game.windowHeight());
     WindowEventManager.registerWindowRefreshListener(
-        () -> DEBUG_CAM.setToOrtho(false, Game.windowWidth(), Game.windowHeight()));
+        () -> DEBUG_CAM.setToOrtho(false, game.windowWidth(), game.windowHeight()));
   }
 
   @Override
@@ -109,7 +121,7 @@ public class DebugDrawSystem extends System {
     filteredEntityStream(PositionComponent.class).forEach(this::drawPosition);
 
     if (!LevelEditorSystem.active()) {
-      drawNamedPoints();
+      drawNamedPoints(game);
     }
   }
 
@@ -118,7 +130,7 @@ public class DebugDrawSystem extends System {
     GlyphLayout layout = new GlyphLayout(FONT, text);
     float padding = 4f;
     float textX = 10f;
-    float textY = Game.windowHeight() - 10f;
+    float textY = game.windowHeight() - 10f;
     float bgX = textX - padding;
     float bgY = textY - layout.height - padding;
     float bgW = layout.width + 2f * padding;
@@ -136,7 +148,7 @@ public class DebugDrawSystem extends System {
 
   private String buildSystemListText() {
     List<String> systemNames =
-        Game.systems().values().stream()
+        game.systems().values().stream()
             .filter(System::isRunning)
             .filter(ECSManagement::isAuthoritativeInCurrentTick)
             .map(system -> system.getClass().getSimpleName())
@@ -201,9 +213,13 @@ public class DebugDrawSystem extends System {
     if (CameraSystem.isEntityHovered(entity) && decoComponent.isEmpty()) drawEntityInfo(entity, pc);
   }
 
-  /** Draws named points from the current level. */
-  public static void drawNamedPoints() {
-    drawNamedPoints(null, false);
+  /**
+   * Draws named points from the current level.
+   *
+   * @param game The game provider to be used.
+   */
+  public static void drawNamedPoints(GameProvider game) {
+    drawNamedPoints(null, false, game);
   }
 
   /**
@@ -211,9 +227,11 @@ public class DebugDrawSystem extends System {
    *
    * @param highlightPoint The name of the point to highlight, or null for none.
    * @param pointModeActive Whether point mode is active, affecting the color used.
+   * @param game The game provider to be used.
    */
-  public static void drawNamedPoints(String highlightPoint, boolean pointModeActive) {
-    ILevel l = Game.currentLevel().orElse(null);
+  public static void drawNamedPoints(
+      String highlightPoint, boolean pointModeActive, GameProvider game) {
+    ILevel l = game.currentLevel().orElse(null);
     if (l == null) return;
     Color normalColor = pointModeActive ? POINT_MODE_COLOR : NAMED_POINT_COLOR;
     DungeonLevel level = (DungeonLevel) l;
@@ -324,12 +342,12 @@ public class DebugDrawSystem extends System {
    * Draw on entity hover relevant entity infos.
    *
    * <pre>
-   *   * Entity ID
-   *   * Position; View Direction
-   *   * Current Velocity (if VelocityComponent is present)
-   *   * curHealth/maxHealth (if HealthComponent is present)
-   *   * Current Animation state (if DrawComponent is present)
-   *   * List of all components attached to the entity
+   * * Entity ID
+   * * Position; View Direction
+   * * Current Velocity (if VelocityComponent is present)
+   * * curHealth/maxHealth (if HealthComponent is present)
+   * * Current Animation state (if DrawComponent is present)
+   * * List of all components attached to the entity
    * </pre>
    *
    * @param entity The entity to draw info for.
