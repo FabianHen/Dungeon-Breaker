@@ -8,6 +8,7 @@ plugins {
     id 'com.diffplug.spotless' version "${spotlessVersion}"
     id 'com.google.protobuf' version "${protobufGradlePluginVersion}" apply false
     id 'com.github.jk1.dependency-license-report' version "${jk1licenseVersion}"
+    id 'info.solidsoft.pitest' version '1.19.0' apply false
 }
 
 licenseReport {
@@ -36,6 +37,20 @@ subprojects {
             into("META-INF")
         }
     }
+
+    apply plugin: 'java'
+    apply plugin: 'info.solidsoft.pitest'
+
+    pitest {
+        junit5PluginVersion = '1.2.1'
+
+        targetClasses = ['contrib.*']
+        targetTests = ['contrib.*']
+        mutators = ['DEFAULTS']
+        outputFormats = ['HTML', 'XML']
+        threads = 4
+    }
+
 }
 
 allprojects {
