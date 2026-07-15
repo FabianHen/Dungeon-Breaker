@@ -53,7 +53,7 @@ public class useItemTest {
         when(mockInventoryComponent.get(itemSlot)).thenReturn(Optional.of(mockItem));
 
         //assert
-        assertTrue(HeroController.useItem(mockEntity, itemSlot), "TODO");
+        assertTrue(HeroController.useItem(mockEntity, itemSlot), "return value of useItem is false");
     }
 
     //G2. Slot ist leer 1/2
@@ -67,7 +67,7 @@ public class useItemTest {
         when(mockInventoryComponent.get(itemSlot)).thenReturn(Optional.empty());
 
         //assert
-        assertDoesNotThrow(() -> {HeroController.useItem(mockEntity, itemSlot);}, "TODO");
+        assertDoesNotThrow(() -> {HeroController.useItem(mockEntity, itemSlot);}, "useItem throw an exeption");
     }
 
     //G2. Slot ist leer 2/2
@@ -81,7 +81,7 @@ public class useItemTest {
         when(mockInventoryComponent.get(itemSlot)).thenReturn(Optional.empty());
 
         //assert
-        assertFalse(HeroController.useItem(mockEntity, itemSlot), "TODO");
+        assertFalse(HeroController.useItem(mockEntity, itemSlot), "return value of useItem is true");
     }
 
     //U1. Entity ist null
@@ -91,7 +91,7 @@ public class useItemTest {
         int itemSlot = 0;
 
         //assert
-        assertThrows(NullPointerException.class, () -> {HeroController.useItem(null, itemSlot);}, "TODO");
+        assertThrows(NullPointerException.class, () -> {HeroController.useItem(null, itemSlot);}, "useItem not throw an exeption");
     }
 
     //U2. InventoryComponent fehlt
@@ -103,11 +103,6 @@ public class useItemTest {
         when(mockEntity.fetch(InventoryComponent.class)).thenReturn(Optional.empty());
 
         //assert
-        assertThrows(MissingComponentException.class, () -> {HeroController.useItem(mockEntity, itemSlot);}, "TODO");
-    }
-
-    //U3. ItemSlot außerhalb gültiger Inventargröße
-    void useItem_test(){
-
+        assertThrows(MissingComponentException.class, () -> {HeroController.useItem(mockEntity, itemSlot);}, "useItem not throw an exeption");
     }
 }
